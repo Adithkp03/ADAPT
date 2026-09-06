@@ -40,11 +40,13 @@ Thumbs.db
 .idea/
 *.code-workspace
 
-# Experiments artefacts
+# Experiments artefacts (large/raw only — committed evidence exempted below)
 experiments/outputs/
 experiments/checkpoints/
 experiments/raw_results/
-results/
+# NOTE: research/experiments/*/results.json + figures/ are small committed evidence
+!research/**/results.json
+!research/**/figures/
 *.ckpt
 *.pt
 *.pth

@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+.env
+.env.*
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.ipynb_checkpoints
+
+# Node / Frontend
+node_modules/
+.next/
+dist/
+build/
+out/
+.turbo/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Experiments artefacts
+experiments/outputs/
+experiments/checkpoints/
+experiments/raw_results/
+results/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+wandb/
+mlruns/
+*.parquet
+*.h5
+*.hdf5
+
+# Provenance / large assets
+data/raw/
+data/cache/
+*.db
+*.sqlite
+
+# Secrets
+secrets/
+credentials.json
+service_account*.json

@@ -34,5 +34,10 @@ def test_ground_truth_arc():
 
 def test_leakage_splits_disjoint():
     tr = {generate_task("symbolic", s, split="train").hidden_rule["offset"] for s in range(50)}
-    ev = {generate_task("symbolic", s, split="eval").hidden_rule["offset"] for s in range(50)}
-    assert tr.isdisjoint(ev), f"leakage: {tr & ev}"
+    va = {generate_task("symbolic", s, split="val").hidden_rule["offset"] for s in range(50)}
+    te = {generate_task("symbolic", s, split="test").hidden_rule["offset"] for s in range(50)}
+    assert tr.isdisjoint(va) and tr.isdisjoint(te) and va.isdisjoint(te)
+    # grid toy pools disjoint too
+    gtr = {generate_task("grid_toy", s, split="train").hidden_rule["rule"] for s in range(30)}
+    gte = {generate_task("grid_toy", s, split="test").hidden_rule["rule"] for s in range(30)}
+    assert gtr.isdisjoint(gte)

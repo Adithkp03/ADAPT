@@ -1,30 +1,35 @@
 {
   "config": {
-    "experiment": "001_task_acquisition_linear",
+    "experiment": "009_learned_backbone_linear",
     "protocol": "standard",
     "family": "linear",
     "strategies": [
       "frozen",
       "context",
-      "param_tta",
       "state",
-      "ttt_state"
+      "learned_state",
+      "learned_tta",
+      "learned_ttt"
     ],
     "strategy_kwargs": {
-      "param_tta": {
-        "steps": 8,
-        "lr": 0.05
-      },
       "state": {
         "state_dim": null,
         "seed": 0
       },
-      "ttt_state": {
-        "steps": 8,
+      "learned_state": {
+        "checkpoint": "checkpoints/learned_rec_s0.npz"
+      },
+      "learned_tta": {
+        "checkpoint": "checkpoints/learned_ptt_s0.npz",
+        "steps": 5,
         "lr": 0.05
+      },
+      "learned_ttt": {
+        "checkpoint": "checkpoints/learned_ttt_s0.npz",
+        "steps": 5
       }
     },
-    "seeds": [
+    "task_seeds": [
       0,
       1,
       2,
@@ -226,9 +231,10 @@
       198,
       199
     ],
+    "model_seed": 0,
     "n_demos": 4,
     "noise": 0.0,
-    "split": "eval",
+    "split": "test",
     "tol": 0.5
   },
   "summary": {
@@ -241,7 +247,7 @@
       "n": 200,
       "mean_persistent_delta": 0.0,
       "mean_state_delta": 0.0,
-      "mean_latency_ms": 0.0005585001781582832
+      "mean_latency_ms": 0.0019530005010892637
     },
     "context": {
       "accuracy": 1.0,
@@ -252,18 +258,7 @@
       "n": 200,
       "mean_persistent_delta": 0.0,
       "mean_state_delta": 0.0,
-      "mean_latency_ms": 0.02264200011268258
-    },
-    "param_tta": {
-      "accuracy": 0.255,
-      "ci95": [
-        0.19960402982802747,
-        0.31963051307194984
-      ],
-      "n": 200,
-      "mean_persistent_delta": 1.9759146273946135,
-      "mean_state_delta": 0.0,
-      "mean_latency_ms": 0.07194049994723173
+      "mean_latency_ms": 0.12999900005524978
     },
     "state": {
       "accuracy": 1.0,
@@ -274,18 +269,40 @@
       "n": 200,
       "mean_persistent_delta": 0.0,
       "mean_state_delta": 61.616220286676416,
-      "mean_latency_ms": 0.010897500251303427
+      "mean_latency_ms": 0.030421999908867292
     },
-    "ttt_state": {
-      "accuracy": 0.255,
+    "learned_state": {
+      "accuracy": 0.09,
       "ci95": [
-        0.19960402982802747,
-        0.31963051307194984
+        0.05768697871453362,
+        0.13776674613848955
       ],
       "n": 200,
       "mean_persistent_delta": 0.0,
-      "mean_state_delta": 1.9759146273946135,
-      "mean_latency_ms": 0.058138500280620065
+      "mean_state_delta": 2.3524603456154267,
+      "mean_latency_ms": 0.09389100021508057
+    },
+    "learned_tta": {
+      "accuracy": 0.26,
+      "ci95": [
+        0.20413736892786313,
+        0.32490871391293097
+      ],
+      "n": 200,
+      "mean_persistent_delta": 2.071876868800769,
+      "mean_state_delta": 0.0,
+      "mean_latency_ms": 0.5191044993625837
+    },
+    "learned_ttt": {
+      "accuracy": 0.445,
+      "ci95": [
+        0.3778048169746545,
+        0.5142682436763608
+      ],
+      "n": 200,
+      "mean_persistent_delta": 0.0,
+      "mean_state_delta": 3.192323475481855,
+      "mean_latency_ms": 0.17626050019316608
     }
   },
   "diffs": {
@@ -298,15 +315,6 @@
       "mcnemar_p": 5.22024357439882e-54,
       "cohen_h": 2.4654621440291318
     },
-    "param_tta_minus_frozen": {
-      "diff": 0.145,
-      "ci95": [
-        0.07,
-        0.215
-      ],
-      "mcnemar_p": 0.0005216127568115162,
-      "cohen_h": 0.3825760643000875
-    },
     "state_minus_frozen": {
       "diff": 0.89,
       "ci95": [
@@ -316,19 +324,37 @@
       "mcnemar_p": 5.22024357439882e-54,
       "cohen_h": 2.4654621440291318
     },
-    "ttt_state_minus_frozen": {
-      "diff": 0.145,
+    "learned_state_minus_frozen": {
+      "diff": -0.02,
       "ci95": [
-        0.07,
-        0.215
+        -0.075,
+        0.035
       ],
-      "mcnemar_p": 0.0005216127568115162,
-      "cohen_h": 0.3825760643000875
+      "mcnemar_p": 0.6075913612730801,
+      "cohen_h": -0.0667452015298663
+    },
+    "learned_tta_minus_frozen": {
+      "diff": 0.15,
+      "ci95": [
+        0.085,
+        0.22
+      ],
+      "mcnemar_p": 7.333218396948782e-05,
+      "cohen_h": 0.3940111048296471
+    },
+    "learned_ttt_minus_frozen": {
+      "diff": 0.335,
+      "ci95": [
+        0.265,
+        0.41
+      ],
+      "mcnemar_p": 3.1673827557265812e-15,
+      "cohen_h": 0.7844427672464884
     }
   },
   "provenance": {
     "git_commit": "29c5bf0",
-    "config_hash": "0d98a45f7f67",
+    "config_hash": "3651be85061f",
     "model_version": "adapt-v2",
     "task_generator_version": "taskgen-v2",
     "platform": "Windows-10-10.0.26200-SP0",
@@ -738,7 +764,7 @@
       198,
       199
     ],
-    "wall_s": 0.26692519999778597
+    "wall_s": 1.1621473999985028
   },
-  "evidence_type": "CONTROLLED_TOY"
+  "evidence_type": "LEARNED_MODEL_EXPERIMENT"
 }

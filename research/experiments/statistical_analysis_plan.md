@@ -1,26 +1,32 @@
-# Statistical Analysis Plan — candidate (freeze with episode protocol before Phase 2 runs)
+# Statistical Analysis Plan — v2 (Phase 2B, frozen for 2B eval)
 
-**Status:** CANDIDATE 2026-09-06 | Formal preregistration occurs at freeze (config + seed set + this file hashed).
+**Status:** FROZEN 2026-09-06 for Phase 2B test-split evaluation. Preregistration: this file + episode_protocol + reset_and_isolation + seed lists hashed at commit before test runs.
 
-## Primary outcome
-Exact task success / accuracy per episode (tolerance for regression tiers, exact-match for symbolic/ARC-like). All claims evaluated on this first.
+## Seed taxonomy (review fix)
 
-## Secondary outcomes
-Adaptation gain G, retention R_A, latency, Delta_theta / Delta_s, state-intervention effect (A(s_A)-A(s_tilde)).
+- `task_seeds`: task/episode identity (which rule + demos + query). Paired across strategies.
+- `model_seed`: model randomness (init, ES sampling, projection draws). Recorded in provenance.
+- Never conflate: one model_seed x full task_seed set = one factorial cell. Learned results reported per model_seed (0,1) then averaged.
 
-## Design
-Paired: every condition evaluated on IDENTICAL task+seed sets. Exploit pairing (paired tests / paired bootstrap CIs), not independent-sample tests.
+## Splits
 
-## Comparisons
-- Core: A_state vs A_frozen (paired).
-- Mechanistic: A(s_A) vs A(s_tilde) per intervention type (paired).
-- Capacity: trend over d_s proxy within tier (report as proxy, not capacity proof).
+- train: meta-training / hyperparameter search. val: checkpoint/HP selection. test: final eval, inspected only through frozen configs. Tuning on test invalidates the run.
 
-## Sample size
-N>=100 episodes/condition pilot; N=500 for final report figures. Report 95% CIs (bootstrap for means, Wilson for proportions; paired bootstrap for differences).
+## Outcomes
+
+- Primary: exact task success / accuracy per episode.
+- Secondary: gain over frozen, retention, latency split (t_adapt/t_predict), intervention drop, probe MSE ratio.
+
+## Tests
+
+- Accuracy with Wilson 95% CI.
+- Paired strategy contrasts: bootstrap 95% CI on differences (paired by task_seed) + exact McNemar two-sided p (paired binary) + Cohen's h effect size.
+- Confirmatory set (Holm-corrected across the set): L1 core gain (learned_state vs frozen), L2 intervention drop, L4 retention drop. Everything else exploratory (CIs only, no binary claims).
 
 ## Multiplicity
-Many experiments planned: designate CONFIRMATORY (E1 core gain, E8 intervention, E5 interference under stress) vs EXPLORATORY (all sweeps). Confirmatory tested at alpha with Holm correction across the three; exploratory reported with CIs only, no binary claims.
 
-## Preregistration rule
-Freeze = this file + episode_protocol.md + reset_and_isolation.md + seed list + config hashes committed and tagged BEFORE runs. Any deviation logged as post-hoc.
+7+ experiments x strategies: only the 3 confirmatory contrasts carry corrected p-values; sweeps report CIs without significance claims.
+
+## Reproducibility
+
+Rerun-identical required: accuracies/deltas/diffs byte-identical across reruns (wall-clock exempt). Provenance: git commit, config hash, model/task versions, task_seeds, model_seed.

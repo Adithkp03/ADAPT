@@ -1,0 +1,32 @@
+{
+  "analytical_state": {
+    "probe": {
+      "probe_mse": 0.41477014305385995,
+      "chance_mse": 3.684134321869557,
+      "ratio": 0.11258279607009009
+    },
+    "transfer": {
+      "transfer_acc": 1.0,
+      "n": 250
+    },
+    "extrapolation": {
+      "interp_acc": 1.0,
+      "extrap_acc": 1.0
+    }
+  },
+  "learned_state": {
+    "probe": {
+      "probe_mse": 1.759336339164873,
+      "chance_mse": 3.684134321869557,
+      "ratio": 0.4775440267530955
+    },
+    "transfer": {
+      "transfer_acc": 0.084,
+      "n": 250
+    },
+    "extrapolation": {
+      "interp_acc": 0.07,
+      "extrap_acc": 0.0
+    }
+  }
+}

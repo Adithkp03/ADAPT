@@ -138,7 +138,7 @@
             "n": 100,
             "mean_persistent_delta": 0.0,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.00018899969290941954
+            "mean_latency_ms": 0.05321699944033753
           },
           "param_tta": {
             "accuracy": 1.0,
@@ -147,9 +147,9 @@
               0.9999999999999998
             ],
             "n": 100,
-            "mean_persistent_delta": 2.58176261530948,
+            "mean_persistent_delta": 3.050741447486975,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.04961400009051431
+            "mean_latency_ms": 0.14208399967174046
           },
           "state": {
             "accuracy": 1.0,
@@ -159,8 +159,8 @@
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
-            "mean_state_delta": 16.0,
-            "mean_latency_ms": 0.006886000301165041
+            "mean_state_delta": 4.044747210251244,
+            "mean_latency_ms": 0.06483300014224369
           }
         },
         "diffs": {
@@ -169,23 +169,130 @@
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           },
           "state_minus_context": {
             "diff": 0.0,
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           }
         },
         "provenance": {
-          "git_commit": "0e82fc0",
+          "git_commit": "29c5bf0",
           "config_hash": "deab38c83d7f",
-          "model_version": "adapt-v1",
-          "task_generator_version": "taskgen-v1",
+          "model_version": "adapt-v2",
+          "task_generator_version": "taskgen-v2",
           "platform": "Windows-10-10.0.26200-SP0",
           "python": "3.11.9",
+          "task_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "model_seed": 0,
           "seeds": [
             0,
             1,
@@ -288,9 +395,9 @@
             98,
             99
           ],
-          "wall_s": 0.09047939999800292
+          "wall_s": 0.14628699999593664
         },
-        "evidence_type": "TOY_EXPERIMENT"
+        "evidence_type": "CONTROLLED_TOY"
       }
     ],
     [
@@ -431,7 +538,7 @@
             "n": 100,
             "mean_persistent_delta": 0.0,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.00017099999240599573
+            "mean_latency_ms": 0.05122800008393824
           },
           "param_tta": {
             "accuracy": 1.0,
@@ -440,9 +547,9 @@
               0.9999999999999998
             ],
             "n": 100,
-            "mean_persistent_delta": 2.455156167426461,
+            "mean_persistent_delta": 3.037480411768053,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.04925299988826737
+            "mean_latency_ms": 0.1339930002723122
           },
           "state": {
             "accuracy": 1.0,
@@ -452,8 +559,8 @@
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
-            "mean_state_delta": 15.22739856552349,
-            "mean_latency_ms": 0.00656599997455487
+            "mean_state_delta": 3.280704205420187,
+            "mean_latency_ms": 0.06051499971363228
           }
         },
         "diffs": {
@@ -462,23 +569,130 @@
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           },
           "state_minus_context": {
             "diff": 0.0,
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           }
         },
         "provenance": {
-          "git_commit": "0e82fc0",
+          "git_commit": "29c5bf0",
           "config_hash": "2178724b22d2",
-          "model_version": "adapt-v1",
-          "task_generator_version": "taskgen-v1",
+          "model_version": "adapt-v2",
+          "task_generator_version": "taskgen-v2",
           "platform": "Windows-10-10.0.26200-SP0",
           "python": "3.11.9",
+          "task_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "model_seed": 0,
           "seeds": [
             0,
             1,
@@ -581,9 +795,9 @@
             98,
             99
           ],
-          "wall_s": 0.08608010000170907
+          "wall_s": 0.13620710000395775
         },
-        "evidence_type": "TOY_EXPERIMENT"
+        "evidence_type": "CONTROLLED_TOY"
       }
     ],
     [
@@ -716,37 +930,37 @@
         },
         "summary": {
           "context": {
-            "accuracy": 1.0,
+            "accuracy": 0.98,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.9299868370580062,
+              0.9944981477650318
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.00019000006432179362
+            "mean_latency_ms": 0.05320099982782267
           },
           "param_tta": {
-            "accuracy": 1.0,
+            "accuracy": 0.98,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.9299868370580062,
+              0.9944981477650318
             ],
             "n": 100,
-            "mean_persistent_delta": 2.3682600075281353,
+            "mean_persistent_delta": 2.996598665778155,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.049484000155644026
+            "mean_latency_ms": 0.1305360002152156
           },
           "state": {
-            "accuracy": 1.0,
+            "accuracy": 0.98,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.9299868370580062,
+              0.9944981477650318
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
-            "mean_state_delta": 14.678921073592157,
-            "mean_latency_ms": 0.006735000242770184
+            "mean_state_delta": 2.716392878592262,
+            "mean_latency_ms": 0.06098800055042375
           }
         },
         "diffs": {
@@ -755,23 +969,130 @@
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           },
           "state_minus_context": {
             "diff": 0.0,
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           }
         },
         "provenance": {
-          "git_commit": "0e82fc0",
+          "git_commit": "29c5bf0",
           "config_hash": "a7579b85b270",
-          "model_version": "adapt-v1",
-          "task_generator_version": "taskgen-v1",
+          "model_version": "adapt-v2",
+          "task_generator_version": "taskgen-v2",
           "platform": "Windows-10-10.0.26200-SP0",
           "python": "3.11.9",
+          "task_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "model_seed": 0,
           "seeds": [
             0,
             1,
@@ -874,9 +1195,9 @@
             98,
             99
           ],
-          "wall_s": 0.08823330000086571
+          "wall_s": 0.16178190000209725
         },
-        "evidence_type": "TOY_EXPERIMENT"
+        "evidence_type": "CONTROLLED_TOY"
       }
     ],
     [
@@ -1009,37 +1330,37 @@
         },
         "summary": {
           "context": {
-            "accuracy": 1.0,
+            "accuracy": 0.84,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.7557955544110558,
+              0.8990479765052628
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.00017699978343443945
+            "mean_latency_ms": 0.05385000025853515
           },
           "param_tta": {
-            "accuracy": 1.0,
+            "accuracy": 0.84,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.7557955544110558,
+              0.8990479765052628
             ],
             "n": 100,
-            "mean_persistent_delta": 2.1729831535487687,
+            "mean_persistent_delta": 2.7759770319760237,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.05292400004691444
+            "mean_latency_ms": 0.13263699962408282
           },
           "state": {
-            "accuracy": 1.0,
+            "accuracy": 0.84,
             "ci95": [
-              0.963005192523998,
-              0.9999999999999998
+              0.7557955544110558,
+              0.8990479765052628
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
-            "mean_state_delta": 13.367949013416363,
-            "mean_latency_ms": 0.0068369999280548654
+            "mean_state_delta": 1.6936015135655667,
+            "mean_latency_ms": 0.05908900006033946
           }
         },
         "diffs": {
@@ -1048,23 +1369,130 @@
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           },
           "state_minus_context": {
             "diff": 0.0,
             "ci95": [
               0.0,
               0.0
-            ]
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           }
         },
         "provenance": {
-          "git_commit": "0e82fc0",
+          "git_commit": "29c5bf0",
           "config_hash": "2ee77e033285",
-          "model_version": "adapt-v1",
-          "task_generator_version": "taskgen-v1",
+          "model_version": "adapt-v2",
+          "task_generator_version": "taskgen-v2",
           "platform": "Windows-10-10.0.26200-SP0",
           "python": "3.11.9",
+          "task_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "model_seed": 0,
           "seeds": [
             0,
             1,
@@ -1167,9 +1595,9 @@
             98,
             99
           ],
-          "wall_s": 0.08849159999954281
+          "wall_s": 0.13566340000397759
         },
-        "evidence_type": "TOY_EXPERIMENT"
+        "evidence_type": "CONTROLLED_TOY"
       }
     ],
     [
@@ -1302,62 +1730,169 @@
         },
         "summary": {
           "context": {
-            "accuracy": 0.88,
+            "accuracy": 0.56,
             "ci95": [
-              0.8018773199709163,
-              0.9300066263473222
+              0.4622792771125631,
+              0.6532813459903167
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.00017599995771888644
+            "mean_latency_ms": 0.05098599984194152
           },
           "param_tta": {
-            "accuracy": 0.94,
+            "accuracy": 0.56,
             "ci95": [
-              0.8752303146877749,
-              0.9722142547333434
+              0.4622792771125631,
+              0.6532813459903167
             ],
             "n": 100,
-            "mean_persistent_delta": 1.9984554404641401,
+            "mean_persistent_delta": 2.12355978229109,
             "mean_state_delta": 0.0,
-            "mean_latency_ms": 0.05153400015842635
+            "mean_latency_ms": 0.13240599990240298
           },
           "state": {
-            "accuracy": 0.94,
+            "accuracy": 0.56,
             "ci95": [
-              0.8752303146877749,
-              0.9722142547333434
+              0.4622792771125631,
+              0.6532813459903167
             ],
             "n": 100,
             "mean_persistent_delta": 0.0,
-            "mean_state_delta": 12.125934575771558,
-            "mean_latency_ms": 0.006817999928898644
+            "mean_state_delta": 0.8093210882392632,
+            "mean_latency_ms": 0.05658300033246633
           }
         },
         "diffs": {
           "param_tta_minus_context": {
-            "diff": 0.06,
+            "diff": 0.0,
             "ci95": [
-              0.02,
-              0.11
-            ]
+              0.0,
+              0.0
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           },
           "state_minus_context": {
-            "diff": 0.06,
+            "diff": 0.0,
             "ci95": [
-              0.02,
-              0.11
-            ]
+              0.0,
+              0.0
+            ],
+            "mcnemar_p": 1.0,
+            "cohen_h": 0.0
           }
         },
         "provenance": {
-          "git_commit": "0e82fc0",
+          "git_commit": "29c5bf0",
           "config_hash": "9f39dc99401b",
-          "model_version": "adapt-v1",
-          "task_generator_version": "taskgen-v1",
+          "model_version": "adapt-v2",
+          "task_generator_version": "taskgen-v2",
           "platform": "Windows-10-10.0.26200-SP0",
           "python": "3.11.9",
+          "task_seeds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "model_seed": 0,
           "seeds": [
             0,
             1,
@@ -1460,9 +1995,9 @@
             98,
             99
           ],
-          "wall_s": 0.09169919999840204
+          "wall_s": 0.13938970000162954
         },
-        "evidence_type": "TOY_EXPERIMENT"
+        "evidence_type": "CONTROLLED_TOY"
       }
     ]
   ]

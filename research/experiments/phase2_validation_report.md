@@ -1,7 +1,7 @@
 # D2.9 — Phase 2 Reproducibility & Validation Report
 
 **Date:** 2026-09-06 | **Engine:** adapt-v1 + taskgen-v1 | **Evidence type:** TOY_EXPERIMENT (all results below are our controlled implementation, not official BDH behavior)
-**Reproduce:** `system-python run_experiment.py experiments/configs/<exp>.yaml` or `system-python experiments/run_sweeps.py <002|003|004|006|007>`; tests: `system-python -m pytest tests/ -q` (13/13 green)
+**Reproduce:** `system-python run_experiment.py experiments/configs/<exp>.yaml` or `system-python experiments/run_sweeps.py <002|003|004|006|007>`; tests: `system-python -m pytest tests/ -q` (26/26 green)
 **Provenance:** every results.json carries git_commit, config_hash, model/task versions, seeds, wall time.
 
 ---
@@ -38,13 +38,19 @@ linear 1.00 / quadratic context 1.00 vs state 0.17 / symbolic 1.00 / composition
 
 ## E8 — Causal state intervention (008, N=100)
 
-Linear state: base 1.00 -> zeroed/shuffled/noisy/swapped ~0.05-0.08 -> restored 1.00. All four perturbations destroy, restore recovers: Level-2 mechanistic claim PASSES — adapted state is causally necessary, not merely correlated.
+Linear state: base 1.00 -> zeroed/shuffled/noisy/swapped/nulled ~0.03-0.10 -> restored 1.00. All five perturbations destroy, restore recovers: Level-2 mechanistic claim PASSES — adapted state is causally necessary, not merely correlated.
 Symbolic state: zero 1.00->0.00, shuffle ->0.15, swap ->0.49, noise 1.00->1.00 (small Gaussian noise does not move the argmax — majority robustness, consistent with Exp F). Intervention sensitivity varies honestly by perturbation type. Fig6.
+Interpretation rule (review item 9): shuffle-failure alone is NOT claimed as task-information removal — for learned coordinates it may only show decoder coordinate-correspondence violation. Causal weight rests on swap-with-B (matched counterfactual) + nullmean (population-mean state: on-manifold removal of the task-specific component, s_A minus task direction) with restore ~= base. McNemar exact p per perturbation + Holm step-down across the five comparisons (runner reports mcnemar_p / mcnemar_p_holm / holm_reject).
+
+## E8-learned — Intervention on the learned substrate (009, N=100, linear)
+
+Learned TTT-state (ckpt s0, base 0.41): zero ->0.07, shuffle ->0.06, noise ->0.26, swap ->0.02, nullmean ->0.11; restored 0.41 in all five cells. Same causal signature as the analytical substrate, now in a LEARNED state: swap (matched control) and nullmean (on-manifold null) both collapse accuracy and full recovery follows restore. L2 PASSES for learned TTT-state.
+Learned recurrent state (ckpt s0): base 0.10 ~= frozen floor 0.11 — the ES meta-training did not acquire the linear task, so perturbation drops (0.04-0.15) sit at floor and are UNINTERPRETABLE as causal evidence. Honest negative result, retained: recurrence + ES at h=8/200 steps was insufficient here, while the same budget produced a partially working TTT-state (0.41). Implication for Phase 2B: retrain recurrent with more budget/seed sweep before any L2 claim on that cell; no L2 claim is made for learned_rec from this run.
 
 ## Falsification hierarchy verdict
 
 - L1 Core (gain with dTheta=0): PASS (001 + paired diffs strictly positive).
-- L2 Mechanistic (causal necessity): PASS (008 linear; symbolic 3/4 perturbation types + explained noise exception).
+- L2 Mechanistic (causal necessity): PASS (008 linear; symbolic 3/4 perturbation types + explained noise exception; learned TTT-state E8-learned with swap + nullmean controls; learned_rec negative result retained, no claim).
 - L3 Capacity (proxy affects performance): PASS in cliff form, with stated proxy limitation.
 - L4 Interference (retention loss under stress): PASS (005; H6 nuance recorded).
 - L5 Generalization (across families): PARTIAL — holds linear/symbolic/compositional/ARC-like; quadratic exposes reader limitation (documented, not claim-breaking).

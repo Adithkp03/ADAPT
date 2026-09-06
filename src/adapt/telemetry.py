@@ -49,3 +49,39 @@ def paired_diff_ci(a_hits, b_hits, n_boot=2000, seed=0):
     d = a - b
     boots = [rng.choice(d, size=len(d), replace=True).mean() for _ in range(n_boot)]
     return float(d.mean()), (float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5)))
+
+
+def mcnemar_exact(a_hits, b_hits):
+    """Two-sided exact McNemar p-value for paired binary outcomes."""
+    import math
+    b = sum(1 for a, h in zip(a_hits, b_hits) if a and not h)
+    c = sum(1 for a, h in zip(a_hits, b_hits) if (not a) and h)
+    n = b + c
+    if n == 0:
+        return 1.0
+    k = min(b, c)
+    return min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n)
+
+
+def cohen_h(p1, p2):
+    """Effect size for two proportions."""
+    import math
+    return 2 * math.asin(max(0.0, min(1.0, p1)) ** 0.5) - \
+        2 * math.asin(max(0.0, min(1.0, p2)) ** 0.5)
+
+
+def holm_bonferroni(p_values, alpha=0.05):
+    """Holm step-down correction. Returns {reject, p_adjusted} aligned to input order."""
+    m = len(p_values)
+    if m == 0:
+        return {"reject": [], "p_adjusted": []}
+    order = sorted(range(m), key=lambda i: p_values[i])
+    adj = [0.0] * m
+    for rank, i in enumerate(order):
+        adj[i] = min(1.0, (m - rank) * p_values[i])
+    # enforce monotonicity along sorted order
+    run_max = 0.0
+    for i in order:
+        run_max = max(run_max, adj[i])
+        adj[i] = run_max
+    return {"reject": [p <= alpha for p in adj], "p_adjusted": adj}

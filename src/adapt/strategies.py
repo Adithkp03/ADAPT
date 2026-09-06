@@ -1,26 +1,33 @@
-"""Adaptation strategies — one common interface.
+"""Adaptation strategies — Phase 2B. Honest naming throughout.
 
-reset()  -> restore episodic init (theta_0 / s_0). Enforces isolation.
-adapt(D) -> consume demonstrations (real computation per strategy).
-predict(Q) -> output prediction.
-telemetry() -> dict with persistent_delta, state_delta, steps, latency_ms.
+Analytical (hand-designed, controlled) substrate — Phase 2A, kept:
+- FrozenBaseline: no demonstrations, fixed prior.
+- AnalyticalContext: analytic conditioning at predict time (lstsq /
+  hypothesis vote). An analytical/contextual oracle baseline, NOT
+  learned ICL.
+- GradientTaskLearner: minimal parameterized task learner with
+  inference-time gradient updates (MSE/CE). NOT an LLM undergoing TTT.
+- SufficientStatState: hand-designed sufficient-statistics accumulator
+  with fixed transition s_t = s_{t-1} + phi(x,y). NOT a learned
+  recurrent neural model.
+- TTTState (analytical): state parameterizes a tiny predictor,
+  optimized at test time; persistent init fixed.
 
-Honesty contracts (asserted in tests):
-- FrozenBaseline / ContextICL / RecurrentState / TTTState: persistent
-  params NEVER change (persistent_delta == 0).
-- ParamTTA: persistent params MUST change after adapt on real signal.
-- RecurrentState vs TTTState: recurrence applies a fixed transition F to a
-  sufficient-stat state; TTTState runs gradient descent ON the state S
-  (state parameterizes a model). Different mechanisms, not sizes.
+Learned neural substrate — Phase 2B (see learned.py):
+- LearnedRecurrentState, LearnedParamTTA, LearnedTTTState share one
+  MLP backbone, meta-trained on the train split, tuned on val,
+  evaluated on test.
 
-d_s (state_dim): OPERATIONAL PROXY for capacity — a fixed random
-projection of the sufficient-stat vector to d_s dims. Documented as
-proxy, never as capacity itself.
+Common interface: reset/adapt/predict/telemetry + get_state/set_state
++ persistent_parameters. Episodic reset enforced by runner.
+d_s is an OPERATIONAL PROXY (project-reconstruct bottleneck), never
+capacity itself. Latency is split t_adapt/t_predict; wall-clock from
+this CPU toy is NOT a neural-inference cost claim.
 """
 import time
 import numpy as np
 
-MODEL_VERSION = "adapt-v1"
+MODEL_VERSION = "adapt-v2"
 
 
 class AdaptationStrategy:
@@ -38,12 +45,14 @@ class AdaptationStrategy:
     def telemetry(self):
         raise NotImplementedError
 
-    # E8 causal-intervention hooks (stateful strategies override)
     def get_state(self):
         return None
 
     def set_state(self, state):
         pass
+
+    def persistent_parameters(self):
+        return None
 
 
 def _proj_matrix(rng, in_dim, out_dim):
@@ -53,60 +62,58 @@ def _proj_matrix(rng, in_dim, out_dim):
 
 
 def _reconstruct(P, s):
-    """Bottleneck readout: project to d_s dims and back (lossy if d_s < dim)."""
-    import numpy as np
     if P is None:
         return s
     return np.linalg.pinv(P) @ (P @ s)
 
 
-class FrozenBaseline(AdaptationStrategy):
-    """B1: no demonstrations. Fixed prior prediction."""
-    name = "frozen"
+def _mse_loss(family, pairs, predict_fn):
+    import math
+    if family in ("linear", "quadratic"):
+        errs = [(predict_fn(x) - y) for x, y in pairs]
+        return float(sum(e * e for e in errs) / max(1, len(errs)))
+    tot = sum(len(y) for _, y in pairs)
+    bad = sum(a != b for x, y in pairs for a, b in zip(predict_fn(x), y))
+    return bad / max(1, tot)
 
-    def __init__(self):
-        self._t0 = 0.0
+
+class FrozenBaseline(AdaptationStrategy):
+    name = "frozen"
 
     def reset(self):
         pass
 
     def adapt(self, demonstrations):
-        self._t0 = time.perf_counter()  # no-op; timed for honesty
+        pass
 
     def predict(self, query):
         if isinstance(query, (int, float)):
             return 0.0
         if isinstance(query, list) and query and isinstance(query[0], list):
-            return [row[:] for row in query]  # identity grid
+            return [row[:] for row in query]
         return [0] * len(query)
 
     def telemetry(self):
-        return {"persistent_delta": 0.0, "state_delta": 0.0,
-                "steps": 0, "latency_ms": 0.0}
+        return {"persistent_delta": 0.0, "state_delta": 0.0, "steps": 0,
+                "t_adapt_ms": 0.0, "t_predict_ms": 0.0, "latency_ms": 0.0,
+                "param_count": 0, "state_dim": 0, "state_bytes": 0,
+                "loss_before": None, "loss_after": None, "grad_norm": 0.0}
 
 
-class ContextICL(AdaptationStrategy):
-    """B2: analytic conditioning on D at predict time. No persistent update.
-
-    Linear/quadratic: closed-form least squares computed transiently.
-    Symbolic/compositional: offset inferred by majority vote over D pairs.
-    ARC-like: vote over candidate transforms by fit on D.
-    """
+class AnalyticalContext(AdaptationStrategy):
+    """Analytical conditioning baseline (NOT learned ICL)."""
     name = "context"
 
     def __init__(self):
         self._demos = []
-        self._lat = 0.0
 
     def reset(self):
         self._demos = []
 
     def adapt(self, demonstrations):
-        t = time.perf_counter()
         self._demos = list(demonstrations)
-        self._lat = (time.perf_counter() - t) * 1000
 
-    def _fit_linear(self, degree=1):
+    def _fit_poly(self, degree):
         xs = np.array([x for x, _ in self._demos], dtype=float)
         ys = np.array([y for _, y in self._demos], dtype=float)
         if len(xs) == 0:
@@ -115,59 +122,63 @@ class ContextICL(AdaptationStrategy):
         coef, _, _, _ = np.linalg.lstsq(X, ys, rcond=None)
         return coef
 
-    def _vote_offset(self, family):
-        from collections import Counter
-        votes = Counter()
-        for x, y in self._demos:
-            for a, b in zip(x, y if family == "symbolic" else y):
-                votes[(b - a) % 8] += 1
-        if not votes:
-            return 0
-        return votes.most_common(1)[0][0]
+    def _best_affine(self):
+        from .tasks import VOCAB, MULTS
+        best, best_s = (1, 0), -1
+        for a in MULTS:
+            for o in range(VOCAB):
+                s = sum(1 for x, y in self._demos
+                        if [(a * v + o) % VOCAB for v in x] == y)
+                if s > best_s:
+                    best, best_s = (a, o), s
+        return best
 
     def predict(self, query, family="linear"):
-        if family in ("linear",):
-            c = self._fit_linear(1)
+        if family == "linear":
+            c = self._fit_poly(1)
             return float(c[0] + c[1] * query)
         if family == "quadratic":
-            c = self._fit_linear(2)
+            c = self._fit_poly(2)
             return float(c[0] + c[1] * query + c[2] * query * query)
         if family == "symbolic":
-            o = self._vote_offset("symbolic")
-            return [(v + o) % 8 for v in query]
+            from .tasks import VOCAB
+            a, o = self._best_affine()
+            return [(a * v + o) % VOCAB for v in query]
         if family == "compositional":
-            # infer offset on reversed inputs
-            from collections import Counter
-            votes = Counter()
-            for x, y in self._demos:
-                xr = list(reversed(x))
-                for a, b in zip(xr, y):
-                    votes[(b - a) % 8] += 1
-            o = votes.most_common(1)[0][0] if votes else 0
-            return [(v + o) % 8 for v in reversed(query)]
-        if family == "arc_like":
-            from .tasks import ARC_FNS
-            best, best_score = "rot90", -1
-            for name, fn in ARC_FNS.items():
+            # hypothesis vote over single ops only (honest limit: deeper
+            # chains are NOT solvable by this baseline — ladder effect)
+            from .tasks import VOCAB, _apply_chain
+            cands = [{"op": "reverse"}] + [
+                {"op": "shift", "offset": o} for o in range(VOCAB)]
+            best, best_s = cands[0], -1
+            for hyp in cands:
+                s = sum(1 for x, y in self._demos if _apply_chain(x, [hyp]) == y)
+                if s > best_s:
+                    best, best_s = hyp, s
+            return _apply_chain(query, [best])
+        if family == "grid_toy":
+            from .tasks import GRID_FNS
+            best, best_s = "rot90", -1
+            for name, fn in GRID_FNS.items():
                 s = sum(1 for x, y in self._demos if fn(x) == y)
-                if s > best_score:
-                    best, best_score = name, s
-            return ARC_FNS[best](query)
+                if s > best_s:
+                    best, best_s = name, s
+            return GRID_FNS[best](query)
         raise ValueError(family)
 
     def telemetry(self):
-        return {"persistent_delta": 0.0, "state_delta": 0.0,
-                "steps": 0, "latency_ms": self._lat}
+        return {"persistent_delta": 0.0, "state_delta": 0.0, "steps": 0,
+                "t_adapt_ms": 0.0, "t_predict_ms": 0.0, "latency_ms": 0.0,
+                "param_count": 0, "state_dim": 0, "state_bytes": 0,
+                "loss_before": None, "loss_after": None, "grad_norm": 0.0}
 
 
-class ParamTTA(AdaptationStrategy):
-    """B3: genuine gradient descent on persistent params at test time.
+# back-compat alias (Phase 2A names)
+ContextICL = AnalyticalContext
 
-    Regression: theta=(w,b[,c]) from zeros, K GD steps on MSE over D.
-    Symbolic/compositional: score vector over 8 offsets, GD on
-    negative log-likelihood of observed pairs (real update).
-    ARC-like: score vector over candidate transforms, GD similarly.
-    """
+
+class GradientTaskLearner(AdaptationStrategy):
+    """Minimal parameterized task learner, inference-time GD (NOT LLM TTT)."""
     name = "param_tta"
 
     def __init__(self, family="linear", steps=8, lr=0.05):
@@ -176,106 +187,127 @@ class ParamTTA(AdaptationStrategy):
         self.lr = lr
         self._theta0 = None
         self.theta = None
-        self._lat = 0.0
+        self._gnorm = 0.0
 
     def _init(self):
-        if self.family in ("linear",):
+        if self.family == "linear":
             return np.zeros(2)
         if self.family == "quadratic":
             return np.zeros(3)
-        return np.zeros(8)  # offset / transform scores
+        if self.family == "symbolic":
+            from .tasks import MULTS, VOCAB
+            return np.zeros(len(MULTS) * VOCAB)
+        if self.family == "grid_toy":
+            from .tasks import GRID_FNS
+            return np.zeros(len(GRID_FNS))
+        return np.zeros(8)
+
+    def _hyps(self):
+        if self.family == "symbolic":
+            from .tasks import MULTS, VOCAB
+            return [(a, o) for a in MULTS for o in range(VOCAB)]
+        if self.family == "grid_toy":
+            from .tasks import GRID_FNS
+            return list(GRID_FNS.keys())
+        return None
 
     def reset(self):
         self._theta0 = self._init()
         self.theta = self._theta0.copy()
 
+    def _obs(self, demonstrations):
+        import numpy as np
+        hyps = self._hyps()
+        obs = np.zeros(len(hyps))
+        if self.family == "symbolic":
+            from .tasks import VOCAB
+            for x, y in demonstrations:
+                for i, (a, o) in enumerate(hyps):
+                    if [(a * v + o) % VOCAB for v in x] == y:
+                        obs[i] += 1
+        elif self.family == "grid_toy":
+            from .tasks import GRID_FNS
+            for x, y in demonstrations:
+                for i, name in enumerate(hyps):
+                    if GRID_FNS[name](x) == y:
+                        obs[i] += 1
+        return obs
+
     def adapt(self, demonstrations):
-        t = time.perf_counter()
         if self.theta is None:
             self.reset()
+        if self.family == "compositional":
+            return  # honest limit: no parametric chain learner; predict=identity-ish
         if self.family == "linear":
             xs = np.array([x for x, _ in demonstrations])
             ys = np.array([y for _, y in demonstrations])
             th = self.theta
             for _ in range(self.steps):
-                pred = th[0] + th[1] * xs
-                err = pred - ys
+                err = (th[0] + th[1] * xs) - ys
                 n = max(1, len(xs))
-                th = th - self.lr * np.array([2 * err.mean(), 2 * (err * xs).mean()])
+                g = np.array([2 * err.mean(), 2 * (err * xs).mean()])
+                self._gnorm = float(np.linalg.norm(g))
+                th = th - self.lr * g
             self.theta = th
         elif self.family == "quadratic":
+            # lr documented here AND in config; tuned on val split only
+            # (0.1 inner damping compensates x^4-scale gradients)
             xs = np.array([x for x, _ in demonstrations])
             ys = np.array([y for _, y in demonstrations])
             th = self.theta
             for _ in range(self.steps):
-                pred = th[0] + th[1] * xs + th[2] * xs * xs
-                err = pred - ys
+                err = (th[0] + th[1] * xs + th[2] * xs * xs) - ys
                 g = np.array([2 * err.mean(), 2 * (err * xs).mean(),
                               2 * (err * xs * xs).mean()])
-                th = th - self.lr * 0.1 * g
+                self._gnorm = float(np.linalg.norm(g))
+                th = th - (self.lr * 0.1) * g
             self.theta = th
         else:
-            # discrete score vector via softmax CE gradient
-            obs = self._offset_votes(demonstrations)
+            obs = self._obs(demonstrations)
             th = self.theta
             for _ in range(self.steps):
                 p = np.exp(th - th.max())
                 p = p / p.sum()
-                g = p.copy()
                 tot = obs.sum()
-                if tot > 0:
-                    g = g - obs / tot
+                g = p - (obs / tot if tot > 0 else p * 0)
+                self._gnorm = float(np.linalg.norm(g))
                 th = th - self.lr * g
             self.theta = th
-        self._lat = (time.perf_counter() - t) * 1000
-
-    def _offset_votes(self, demonstrations):
-        import numpy as np
-        obs = np.zeros(8)
-        if self.family == "arc_like":
-            from .tasks import ARC_FNS
-            names = list(ARC_FNS.keys())
-            for x, y in demonstrations:
-                for i, name in enumerate(names):
-                    if ARC_FNS[name](x) == y:
-                        obs[i] += 1
-            return obs
-        for x, y in demonstrations:
-            seq = list(reversed(x)) if self.family == "compositional" else x
-            for a, b in zip(seq, y):
-                obs[(b - a) % 8] += 1
-        return obs
 
     def predict(self, query):
         if self.family == "linear":
             return float(self.theta[0] + self.theta[1] * query)
         if self.family == "quadratic":
-            return float(self.theta[0] + self.theta[1] * query + self.theta[2] * query * query)
-        if self.family in ("symbolic",):
-            o = int(np.argmax(self.theta))
-            return [(v + o) % 8 for v in query]
+            return float(self.theta[0] + self.theta[1] * query
+                         + self.theta[2] * query * query)
+        if self.family == "symbolic":
+            from .tasks import VOCAB
+            a, o = self._hyps()[int(np.argmax(self.theta))]
+            return [(a * v + o) % VOCAB for v in query]
         if self.family == "compositional":
-            o = int(np.argmax(self.theta))
-            return [(v + o) % 8 for v in reversed(query)]
-        if self.family == "arc_like":
-            from .tasks import ARC_FNS
-            names = list(ARC_FNS.keys())
-            return ARC_FNS[names[int(np.argmax(self.theta))]](query)
+            return list(query)  # honest limit: no parametric chain learner here
+        if self.family == "grid_toy":
+            from .tasks import GRID_FNS
+            return GRID_FNS[self._hyps()[int(np.argmax(self.theta))]](query)
         raise ValueError(self.family)
+
+    def persistent_parameters(self):
+        return None if self.theta is None else self.theta.copy()
 
     def telemetry(self):
         d = float(np.linalg.norm(self.theta - self._theta0)) if self.theta is not None else 0.0
-        return {"persistent_delta": d, "state_delta": 0.0,
-                "steps": self.steps, "latency_ms": self._lat}
+        return {"persistent_delta": d, "state_delta": 0.0, "steps": self.steps,
+                "t_adapt_ms": 0.0, "t_predict_ms": 0.0, "latency_ms": 0.0,
+                "param_count": int(self.theta.size) if self.theta is not None else 0,
+                "state_dim": 0, "state_bytes": 0,
+                "loss_before": None, "loss_after": None, "grad_norm": self._gnorm}
 
 
-class RecurrentState(AdaptationStrategy):
-    """B4: fixed params; state accumulates sufficient statistics.
+ParamTTA = GradientTaskLearner
 
-    s_t = s_{t-1} + phi(x_t, y_t)  (learned-transition analogue with a
-    FIXED transition). Prediction reads s. d_s projects the stat vector
-    through a fixed random matrix (operational capacity proxy).
-    """
+
+class SufficientStatState(AdaptationStrategy):
+    """Hand-designed sufficient-statistics memory (NOT a learned RNN)."""
     name = "state"
 
     def __init__(self, family="linear", state_dim=None, seed=0):
@@ -284,186 +316,187 @@ class RecurrentState(AdaptationStrategy):
         self.seed = seed
         self._s0 = None
         self.s = None
-        self._lat = 0.0
         self._proj = None
 
     def _stat_dim(self):
-        return {"linear": 5, "quadratic": 9, "symbolic": 8,
-                "compositional": 8, "arc_like": 3}[self.family]
+        return {"linear": 5, "quadratic": 8, "symbolic": 24,
+                "compositional": 8, "grid_toy": 6}[self.family]
 
     def _phi(self, x, y):
-        import numpy as np
         if self.family == "linear":
             return np.array([1.0, x, y, x * x, x * y], dtype=float)
         if self.family == "quadratic":
-            return np.array([1.0, x, y, x * x, x * y, x ** 3, x ** 4,
-                             x * x * y, y * y], dtype=float)
-        if self.family in ("symbolic",):
+            # full 2nd-order sufficient stats: n,sx,sx2,sx3,sx4,sy,sxy,sx2y
+            return np.array([1.0, x, x * x, x ** 3, x ** 4, y, x * y,
+                             x * x * y], dtype=float)
+        if self.family == "symbolic":
+            from .tasks import VOCAB, MULTS
+            v = np.zeros(len(MULTS) * VOCAB)
+            for ia, a in enumerate(MULTS):
+                for o in range(VOCAB):
+                    if [(a * t + o) % VOCAB for t in x] == y:
+                        v[ia * VOCAB + o] += 1
+            return v
+        if self.family == "compositional":
             v = np.zeros(8)
             for a, b in zip(x, y):
                 v[(b - a) % 8] += 1
             return v
-        if self.family == "compositional":
-            v = np.zeros(8)
-            for a, b in zip(reversed(x), y):
-                v[(b - a) % 8] += 1
-            return v
-        from .tasks import ARC_FNS
-        names = list(ARC_FNS.keys())
-        v = np.zeros(3)
+        from .tasks import GRID_FNS
+        names = list(GRID_FNS.keys())
+        v = np.zeros(len(names))
         for i, name in enumerate(names):
-            if ARC_FNS[name](x) == y:
+            if GRID_FNS[name](x) == y:
                 v[i] += 1
         return v
 
     def reset(self):
-        import numpy as np
         d = self._stat_dim()
         self._s0 = np.zeros(d)
         self.s = np.zeros(d)
-        rng = np.random.RandomState(self.seed)
-        self._proj = _proj_matrix(rng, d, self.state_dim)
-
-    def _eff(self):
-        return self.s if self._proj is None else self._proj @ self.s
-
-    def adapt(self, demonstrations):
-        t = time.perf_counter()
-        if self.s is None:
-            self.reset()
-        for x, y in demonstrations:
-            self.s = self.s + self._phi(x, y)
-        self._lat = (time.perf_counter() - t) * 1000
+        self._proj = _proj_matrix(np.random.RandomState(self.seed), d, self.state_dim)
 
     def _use(self):
         return _reconstruct(self._proj, self.s)
 
-    def _read_linear(self):
-        import numpy as np
-        s = self._use()
-        # lstsq-equivalent read from (possibly bottlenecked) stats
-        n, sx, sy, sxx, sxy = s
-        if n < 2:
-            return 0.0, 0.0
-        den = n * sxx - sx * sx
-        if abs(den) < 1e-9:
-            return 0.0, sy / max(1, n)
-        w = (n * sxy - sx * sy) / den
-        b = (sy - w * sx) / n
-        return b, w
+    def adapt(self, demonstrations):
+        if self.s is None:
+            self.reset()
+        for x, y in demonstrations:
+            self.s = self.s + self._phi(x, y)
+
+    def _fit_quad(self, s):
+        # solve 3x3 normal equations from sufficient stats (TRUE quadratic fit)
+        n, sx, sx2, sx3, sx4, sy, sxy, sx2y = s
+        M = np.array([[n, sx, sx2], [sx, sx2, sx3], [sx2, sx3, sx4]])
+        v = np.array([sy, sxy, sx2y])
+        try:
+            c0, c1, c2 = np.linalg.solve(M, v)
+        except np.linalg.LinAlgError:
+            return 0.0, 0.0, 0.0
+        return float(c0), float(c1), float(c2)
 
     def predict(self, query):
-        import numpy as np
         if self.family == "linear":
-            b, w = self._read_linear()
-            return float(b + w * query)
-        if self.family == "quadratic":
-            import numpy as np
             s = self._use()
-            n, sx, sy, sxx, sxy = s[0], s[1], s[2], s[3], s[4]
-            if n < 3:
+            n, sx, sy, sxx, sxy = s
+            if n < 2:
                 return 0.0
             den = n * sxx - sx * sx
             if abs(den) < 1e-9:
                 return 0.0
             w = (n * sxy - sx * sy) / den
-            b = (sy - w * sx) / n
-            return float(b + w * query)
-        if self.family in ("symbolic", "compositional"):
+            return float((sy - w * sx) / n + w * query)
+        if self.family == "quadratic":
+            c0, c1, c2 = self._fit_quad(self._use())
+            return float(c0 + c1 * query + c2 * query * query)
+        if self.family == "symbolic":
+            from .tasks import VOCAB, MULTS
+            s = self._use()
+            if s.sum() <= 0:
+                return list(query)
+            i = int(np.argmax(s))
+            a, o = MULTS[i // VOCAB], i % VOCAB
+            return [(a * v + o) % VOCAB for v in query]
+        if self.family == "compositional":
             s = self._use()
             o = int(np.argmax(s)) if s.sum() > 0 else 0
-            if self.family == "symbolic":
-                return [(v + o) % 8 for v in query]
-            return [(v + o) % 8 for v in reversed(query)]
-        if self.family == "arc_like":
-            from .tasks import ARC_FNS
-            names = list(ARC_FNS.keys())
+            return [(v + o) % 8 for v in query]  # honest limit: shift-only read
+        if self.family == "grid_toy":
+            from .tasks import GRID_FNS
+            names = list(GRID_FNS.keys())
             s = self._use()
-            return ARC_FNS[names[int(np.argmax(s))] if s.sum() > 0 else 0](query)
+            return GRID_FNS[names[int(np.argmax(s))] if s.sum() > 0 else 0](query)
         raise ValueError(self.family)
 
+    def persistent_parameters(self):
+        return np.zeros(0)
+
     def telemetry(self):
-        import numpy as np
-        ds = float(np.linalg.norm(self._eff() - (self._proj @ self._s0 if self._proj is not None else self._s0)))
-        return {"persistent_delta": 0.0, "state_delta": ds,
-                "steps": 0, "latency_ms": self._lat}
+        ds = float(np.linalg.norm(self._use() - _reconstruct(self._proj, self._s0)))
+        return {"persistent_delta": 0.0, "state_delta": ds, "steps": 0,
+                "t_adapt_ms": 0.0, "t_predict_ms": 0.0, "latency_ms": 0.0,
+                "param_count": 0, "state_dim": int(self.s.size),
+                "state_bytes": int(self.s.nbytes),
+                "loss_before": None, "loss_after": None, "grad_norm": 0.0}
 
     def get_state(self):
         return None if self.s is None else self.s.copy()
 
     def set_state(self, state):
-        import numpy as np
         self.s = np.array(state, dtype=float).copy()
 
 
-class TTTState(AdaptationStrategy):
-    """B5 (stretch): the STATE parameterizes a model, optimized at test time.
+RecurrentState = SufficientStatState
 
-    Persistent init (w0, b0, lr) is fixed forever. reset() copies init into
-    working state S. adapt() runs GD ON S. Persistent delta stays 0 while
-    adapted-state delta > 0. Regression families only (honest scope).
-    """
+
+class TTTState(AdaptationStrategy):
+    """Analytical TTT-state: state parameterizes predictor, GD on state."""
     name = "ttt_state"
 
     def __init__(self, family="linear", steps=8, lr=0.05):
-        assert family in ("linear", "quadratic"), "TTTState scope: regression only"
+        assert family in ("linear", "quadratic")
         self.family = family
         self.steps = steps
         self.lr = lr
         self._init = None
         self.S = None
-        self._lat = 0.0
 
     def reset(self):
-        import numpy as np
-        dim = 2 if self.family == "linear" else 3
-        self._init = np.zeros(dim)
-        self.S = np.zeros(dim)
+        self._init = np.zeros(2 if self.family == "linear" else 3)
+        self.S = np.zeros_like(self._init)
 
     def adapt(self, demonstrations):
-        t = time.perf_counter()
         if self.S is None:
             self.reset()
-        import numpy as np
         xs = np.array([x for x, _ in demonstrations])
         ys = np.array([y for _, y in demonstrations])
         S = self.S
         for _ in range(self.steps):
             if self.family == "linear":
-                pred = S[0] + S[1] * xs
-                err = pred - ys
+                err = (S[0] + S[1] * xs) - ys
                 S = S - self.lr * np.array([2 * err.mean(), 2 * (err * xs).mean()])
             else:
-                pred = S[0] + S[1] * xs + S[2] * xs * xs
-                err = pred - ys
+                err = (S[0] + S[1] * xs + S[2] * xs * xs) - ys
                 S = S - self.lr * 0.1 * np.array(
                     [2 * err.mean(), 2 * (err * xs).mean(), 2 * (err * xs * xs).mean()])
         self.S = S
-        self._lat = (time.perf_counter() - t) * 1000
 
     def predict(self, query):
         if self.family == "linear":
             return float(self.S[0] + self.S[1] * query)
         return float(self.S[0] + self.S[1] * query + self.S[2] * query * query)
 
+    def persistent_parameters(self):
+        return None if self._init is None else self._init.copy()
+
     def telemetry(self):
-        import numpy as np
         ds = float(np.linalg.norm(self.S - self._init)) if self.S is not None else 0.0
-        return {"persistent_delta": 0.0, "state_delta": ds,
-                "steps": self.steps, "latency_ms": self._lat}
+        return {"persistent_delta": 0.0, "state_delta": ds, "steps": self.steps,
+                "t_adapt_ms": 0.0, "t_predict_ms": 0.0, "latency_ms": 0.0,
+                "param_count": 0, "state_dim": int(self.S.size),
+                "state_bytes": int(self.S.nbytes),
+                "loss_before": None, "loss_after": None, "grad_norm": 0.0}
 
     def get_state(self):
         return None if self.S is None else self.S.copy()
 
     def set_state(self, state):
-        import numpy as np
         self.S = np.array(state, dtype=float).copy()
 
 
 def make_strategy(name, family="linear", **kw):
-    table = {"frozen": FrozenBaseline, "context": ContextICL,
-             "param_tta": ParamTTA, "state": RecurrentState,
-             "ttt_state": TTTState}
+    table = {"frozen": FrozenBaseline, "context": AnalyticalContext,
+             "param_tta": GradientTaskLearner, "state": SufficientStatState,
+             "ttt_state": TTTState,
+             # Phase 2B learned (lazy import to avoid cycles)
+             "learned_state": None, "learned_tta": None, "learned_ttt": None}
+    if name in ("learned_state", "learned_tta", "learned_ttt"):
+        from .learned import LearnedRecurrentState, LearnedParamTTA, LearnedTTTState
+        ltab = {"learned_state": LearnedRecurrentState,
+                "learned_tta": LearnedParamTTA, "learned_ttt": LearnedTTTState}
+        cls = ltab[name]
+        return cls(family=family, **kw)
     cls = table[name]
     if name in ("frozen", "context"):
         return cls()

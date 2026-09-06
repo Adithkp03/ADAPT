@@ -1,29 +1,23 @@
 {
   "config": {
-    "experiment": "005_interference_linear",
+    "experiment": "009_learned_interference",
     "protocol": "interference",
     "family": "linear",
     "strategies": [
-      "context",
-      "param_tta",
+      "learned_state",
       "state",
-      "ttt_state"
+      "context"
     ],
     "strategy_kwargs": {
-      "param_tta": {
-        "steps": 8,
-        "lr": 0.05
-      },
       "state": {
         "state_dim": null,
         "seed": 0
       },
-      "ttt_state": {
-        "steps": 8,
-        "lr": 0.05
+      "learned_state": {
+        "checkpoint": "checkpoints/learned_rec_s0.npz"
       }
     },
-    "seeds": [
+    "task_seeds": [
       0,
       1,
       2,
@@ -125,52 +119,32 @@
       98,
       99
     ],
+    "model_seed": 0,
     "n_demos": 4,
     "noise": 0.0,
-    "split": "eval",
+    "split": "test",
     "tol": 0.5
   },
   "summary": {
-    "context": {
-      "acc_A_initial": 1.0,
+    "learned_state": {
+      "acc_A_initial": 0.1,
       "ci_A": [
-        0.963005192523998,
-        0.9999999999999998
-      ],
-      "acc_B": 1.0,
-      "ci_B": [
-        0.963005192523998,
-        0.9999999999999998
-      ],
-      "retention_A": 0.03,
-      "ci_R": [
-        0.010254338223414811,
-        0.08452078080402699
-      ],
-      "retention_drop": 0.97,
-      "n": 100,
-      "mean_latency_ms": 0.04803499992704019,
-      "mode": "continual (no reset A->B, explicit)"
-    },
-    "param_tta": {
-      "acc_A_initial": 0.3,
-      "ci_A": [
-        0.21894753866228117,
-        0.3958503843281196
-      ],
-      "acc_B": 0.28,
-      "ci_B": [
-        0.20139559167598364,
-        0.37488212361345724
-      ],
-      "retention_A": 0.1,
-      "ci_R": [
         0.05522854161313613,
         0.1743673043676654
       ],
-      "retention_drop": 0.19999999999999998,
+      "acc_B": 0.09,
+      "ci_B": [
+        0.048071995163884884,
+        0.16226374696643667
+      ],
+      "retention_A": 0.08,
+      "ci_R": [
+        0.04109296948581091,
+        0.1499826687940307
+      ],
+      "retention_drop": 0.020000000000000004,
       "n": 100,
-      "mean_latency_ms": 0.1427320002403576,
+      "mean_latency_ms": 0.27349700016202405,
       "mode": "continual (no reset A->B, explicit)"
     },
     "state": {
@@ -191,35 +165,35 @@
       ],
       "retention_drop": 0.9,
       "n": 100,
-      "mean_latency_ms": 0.011811999647761695,
+      "mean_latency_ms": 0.032931999885477126,
       "mode": "continual (no reset A->B, explicit)"
     },
-    "ttt_state": {
-      "acc_A_initial": 0.3,
+    "context": {
+      "acc_A_initial": 1.0,
       "ci_A": [
-        0.21894753866228117,
-        0.3958503843281196
+        0.963005192523998,
+        0.9999999999999998
       ],
-      "acc_B": 0.28,
+      "acc_B": 1.0,
       "ci_B": [
-        0.20139559167598364,
-        0.37488212361345724
+        0.963005192523998,
+        0.9999999999999998
       ],
-      "retention_A": 0.1,
+      "retention_A": 0.03,
       "ci_R": [
-        0.05522854161313613,
-        0.1743673043676654
+        0.010254338223414811,
+        0.08452078080402699
       ],
-      "retention_drop": 0.19999999999999998,
+      "retention_drop": 0.97,
       "n": 100,
-      "mean_latency_ms": 0.11927899991860613,
+      "mean_latency_ms": 0.09703800002171192,
       "mode": "continual (no reset A->B, explicit)"
     }
   },
   "diffs": {},
   "provenance": {
     "git_commit": "29c5bf0",
-    "config_hash": "abb4efab0f74",
+    "config_hash": "3feaeb717205",
     "model_version": "adapt-v2",
     "task_generator_version": "taskgen-v2",
     "platform": "Windows-10-10.0.26200-SP0",
@@ -325,7 +299,7 @@
       98,
       99
     ],
-    "wall_s": 0.18981289999646833
+    "wall_s": 0.3963565999947605
   },
   "evidence_type": "TOY_EXPERIMENT"
 }

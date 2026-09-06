@@ -1,17 +1,17 @@
-experiment: 008_state_intervention_linear
-protocol: intervention
+experiment: 009_learned_interference
+protocol: interference
 family: linear
 strategies:
+- learned_state
 - state
-- ttt_state
+- context
 strategy_kwargs:
   state:
     state_dim: null
     seed: 0
-  ttt_state:
-    steps: 8
-    lr: 0.05
-seeds:
+  learned_state:
+    checkpoint: checkpoints/learned_rec_s0.npz
+task_seeds:
 - 0
 - 1
 - 2
@@ -112,13 +112,8 @@ seeds:
 - 97
 - 98
 - 99
+model_seed: 0
 n_demos: 4
 noise: 0.0
-split: eval
+split: test
 tol: 0.5
-perturbations:
-- zero
-- shuffle
-- noise
-- swap
-- nullmean

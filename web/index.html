@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AdaptLab — Where does the new rule go?</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to experiment</a>
+<header class="top">
+  <div>
+    <p class="kicker">ADAPT · controlled laboratory</p>
+    <h1>Where does the new rule go?</h1>
+    <p class="sub">A model sees a task it was never trained on, watches a few examples, and solves it — without changing its weights. Run the real experiment. Find where the rule went.</p>
+  </div>
+  <div class="honesty" role="note" aria-label="Honesty notice">
+    <strong>What this is:</strong> small, interpretable toy systems that isolate
+    inference-time adaptation mechanics. <strong>What it is not:</strong> a frontier
+    language model, ARC-AGI, or official BDH software. Every number below is either
+    computed live by the research engine or a labeled precomputed research result.
+  </div>
+</header>
+
+<nav class="stages" aria-label="Journey stages">
+  <ol>
+    <li><a href="#stage-start">Start</a></li>
+    <li><a href="#stage-flagship">Teach it</a></li>
+    <li><a href="#stage-manipulate">Manipulate</a></li>
+    <li><a href="#stage-tradeoffs">Stress it</a></li>
+    <li><a href="#stage-interfere">Break it</a></li>
+    <li><a href="#stage-bdh">BDH bridge</a></li>
+    <li><a href="#stage-challenge">Transfer</a></li>
+    <li><a href="#stage-lab">Lab</a></li>
+    <li><a href="#stage-results">Results</a></li>
+  </ol>
+</nav>
+
+<main id="main">
+<!-- ============ STAGE 0 : START + PRE-TEST ============ -->
+<section id="stage-start" class="card" aria-labelledby="h-start">
+  <h2 id="h-start">Start: check your starting point</h2>
+  <p>If a model learns a new task, it must have changed its weights. <strong>True or false?</strong>
+  Answer 5 quick questions (optional, scored locally, anonymous). You will meet the same ideas again at the end.</p>
+  <div id="pretest"></div>
+  <p class="row"><button id="pretest-score" type="button">Score pre-test</button>
+  <span id="pretest-out" aria-live="polite"></span></p>
+  <p><a class="next" href="#stage-flagship">Continue: teach the model a new rule ↓</a></p>
+</section>
+
+<!-- ============ STAGE 1 : FLAGSHIP ============ -->
+<section id="stage-flagship" class="card" aria-labelledby="h-flag">
+  <h2 id="h-flag">Experiment 001 — Teach the model a new rule</h2>
+  <p><span class="badge live">LIVE</span> <span class="badge syn">SYNTHETIC</span>
+  This task rule was generated now and was never shown during any training. The model sees only the examples — never the rule.</p>
+  <div class="grid2">
+    <div>
+      <h3>Demonstrations</h3>
+      <table id="flag-demos" class="demos"><caption class="sr">Demonstration pairs</caption></table>
+      <h3>New query</h3>
+      <p class="query">x = <strong id="flag-query">?</strong></p>
+      <label for="flag-your">Your prediction (y): <input id="flag-your" inputmode="decimal" autocomplete="off" placeholder="e.g. 2.5"></label>
+      <p class="row"><button id="flag-run" type="button">Run Adaptive State</button>
+      <button id="flag-new" type="button" class="ghost">New unseen task</button></p>
+    </div>
+    <div aria-live="polite" id="flag-out"><p class="dim">Make your prediction, then run.</p></div>
+  </div>
+  <details class="mech"><summary>Explain what just happened (mechanism)</summary>
+    <pre>DEMONSTRATIONS → state update s_t = s + phi(x,y) → QUERY → prediction
+  persistent parameters θ: fixed (Δθ = 0)
+  adaptive state s: changed (Δs ≠ 0)</pre>
+  </details>
+  <div id="flag-quiz"></div>
+</section>
+
+<!-- ============ STAGE 2 : MANIPULATE ============ -->
+<section id="stage-manipulate" class="card" aria-labelledby="h-man">
+  <h2 id="h-man">Experiment 002 — How much evidence does it need?</h2>
+  <p>Before moving the slider: <strong>will more demonstrations improve, hurt, or leave accuracy unchanged?</strong></p>
+  <p class="row" role="group" aria-label="Your prediction about demonstrations">
+    <button type="button" data-ndpred="improve">Improve</button>
+    <button type="button" data-ndpred="same">Stay similar</button>
+    <button type="button" data-ndpred="degrade">Degrade</button>
+    <span id="ndpred-out" aria-live="polite"></span></p>
+  <label for="nd">Demonstrations N_D: <output id="nd-v" for="nd">4</output>
+    <input type="range" id="nd" min="1" max="8" step="1" value="4"></label>
+  <p class="row"><button id="nd-run" type="button">Run sweep (live, 25 tasks/point)</button></p>
+  <canvas id="nd-chart" width="640" height="220" role="img" aria-label="Accuracy versus demonstration count chart"></canvas>
+  <div id="nd-table"></div>
+  <h3>Same task, three mechanisms</h3>
+  <p class="row"><button id="cmp-run" type="button">Compare on identical task</button>
+  <button id="cmp-new" type="button" class="ghost">New task</button></p>
+  <div id="cmp-out" aria-live="polite"></div>
+</section>
+
+<!-- ============ STAGE 3 : TRADEOFFS ============ -->
+<section id="stage-tradeoffs" class="card" aria-labelledby="h-trade">
+  <h2 id="h-trade">Experiments 003/004/006 — Bottlenecks, compute, noise</h2>
+  <div class="grid2">
+    <div>
+      <h3>State bottleneck (Adaptive State)</h3>
+      <p>How much adaptive memory does the model need? Here dimensionality is a <em>controlled proxy</em>, not memory itself.</p>
+      <label for="ds">Bottleneck d_s: <output id="ds-v" for="ds">full</output>
+        <input type="range" id="ds" min="1" max="5" step="1" value="5"></label>
+      <p class="row"><button id="ds-run" type="button">Run bottleneck sweep</button></p>
+      <div id="ds-out" aria-live="polite"></div>
+    </div>
+    <div>
+      <h3>Adaptation compute (Parameter TTA)</h3>
+      <label for="kval">Gradient steps K: <output id="kval-v" for="kval">8</output>
+        <input type="range" id="kval" min="0" max="16" step="1" value="8"></label>
+      <p class="row"><button id="k-run" type="button">Run compute sweep</button></p>
+      <div id="k-out" aria-live="polite"></div>
+      <h3>Noise stress</h3>
+      <p class="row"><button id="nz-run" type="button">Run noise sweep</button></p>
+      <div id="nz-out" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 4 : INTERFERENCE + INTERVENTION ============ -->
+<section id="stage-interfere" class="card" aria-labelledby="h-int">
+  <h2 id="h-int">Experiment 005 — Can it remember two things?</h2>
+  <p>Task A → adapt → Task B → adapt (no reset — continual, explicit) → back to Task A.
+  <strong>Predict first:</strong> after learning B, Task A accuracy will…</p>
+  <p class="row" role="group" aria-label="Retention prediction">
+    <button type="button" data-retpred="improve">Improve</button>
+    <button type="button" data-retpred="same">Stay similar</button>
+    <button type="button" data-retpred="degrade">Degrade</button>
+    <span id="retpred-out" aria-live="polite"></span></p>
+  <p class="row"><button id="int-run" type="button">Run A→B→A</button>
+  <button id="int-new" type="button" class="ghost">New task pair</button></p>
+  <div id="int-out" aria-live="polite"></div>
+  <h3>Causal check: is the state necessary?</h3>
+  <p>Perturb the adapted state, re-measure, restore. Causal weight rests on <em>swap</em> (matched counterfactual) and <em>nullmean</em> (on-manifold null) — shuffle-failure alone proves nothing about information content.</p>
+  <p class="row"><button id="e8-run" type="button">Run intervention</button></p>
+  <div id="e8-out" aria-live="polite"></div>
+</section>
+
+<!-- ============ STAGE 5 : BDH ============ -->
+<section id="stage-bdh" class="card" aria-labelledby="h-bdh">
+  <h2 id="h-bdh">Bridge — from toy state to frontier memory</h2>
+  <p><span class="badge pub">PUBLISHED RESULT</span> <span class="badge ill">ILLUSTRATIVE</span>
+  You just watched task information live in an evolving state while parameters stayed fixed.
+  A frontier architecture explores the same design idea at scale:</p>
+  <h3>BDH — brain-inspired Post-Transformer</h3>
+  <ul>
+    <li>Scale-free graph of locally interacting neuron particles (few hubs, many low-degree nodes).</li>
+    <li>Working memory in <strong>synaptic state σ</strong> via Hebbian updates — transient, not trained weights.</li>
+    <li>Sparse positive activations; GPU-friendly formulation. Sources: BDH paper (arXiv 2025), Pathway “Equations of Reasoning”, public repo pathwaycom/bdh.</li>
+  </ul>
+  <div class="hebb">
+    <p><strong>Educational implementation</strong> (not official BDH code) of the published update form
+    σ ← σ + η·x·y<sup>T</sup>. Move η — the update magnitude below is computed live from your value:</p>
+    <label for="eta">Learning rate η: <output id="eta-v" for="eta">0.10</output>
+      <input type="range" id="eta" min="0" max="1" step="0.05" value="0.1"></label>
+    <p>‖Δσ‖ = <strong id="eta-out">?</strong> <span class="dim">(‖x‖=‖y‖=1 demo vectors)</span></p>
+  </div>
+  <h3>BDH-CQ — memory + latent reasoning, no verbal chain-of-thought</h3>
+  <p>Per the BDH-CQ paper (arXiv 2026): demonstrations update <strong>recurrent memory</strong>, then the query is solved by
+  <strong>iterative latent computation</strong> — parameters static during inference. Reported configuration-specific result:
+  150M, 29.5% pass@2 on ARC-AGI-1 at computed $0.0007/task (do not generalize beyond that configuration).</p>
+  <div id="bdh-quiz"></div>
+  <table class="map"><caption>Concept map: your lab ↔ frontier</caption>
+    <tr><th scope="col">You manipulated</th><th scope="col">BDH/BDH-CQ analogue</th></tr>
+    <tr><td>Adaptive state s (Δθ = 0)</td><td>Synaptic state σ / recurrent memory M<sub>t</sub></td></tr>
+    <tr><td>Demonstrations D</td><td>Input sequence / memory writes</td></tr>
+    <tr><td>Gradient steps K</td><td>Latent reasoning steps (effort)</td></tr>
+    <tr><td>A→B→A forgetting</td><td>Working-memory interference window</td></tr>
+  </table>
+</section>
+
+<!-- ============ STAGE 6 : TRANSFER CHALLENGE ============ -->
+<section id="stage-challenge" class="card" aria-labelledby="h-ch">
+  <h2 id="h-ch">Final challenge — a task family you have not touched</h2>
+  <p><span class="badge live">LIVE</span> <span class="badge syn">SYNTHETIC</span>
+  Compositional rules (operation chains, up to depth 3). No guidance: which mechanism wins here?</p>
+  <p class="row"><button id="ch-new" type="button">Deal unseen compositional task</button></p>
+  <div id="ch-task"></div>
+  <div id="ch-quiz"></div>
+  <p class="row"><button id="ch-run" type="button">Reveal all three mechanisms</button></p>
+  <div id="ch-out" aria-live="polite"></div>
+  <label for="ch-explain">In 2–3 sentences, explain where the new task information is stored in the state-based system and what happens when another task interferes with it.
+    <textarea id="ch-explain" rows="3" cols="60" placeholder="Your explanation (kept locally, evaluated in the learner study)"></textarea></label>
+</section>
+
+<!-- ============ STAGE 7 : LAB ============ -->
+<section id="stage-lab" class="card" aria-labelledby="h-lab">
+  <h2 id="h-lab">Laboratory — full controls, same engine</h2>
+  <div class="labgrid">
+    <label>Family <select id="lab-fam">
+      <option value="linear">Linear Rule Lab</option><option value="quadratic">Quadratic Rule Lab</option>
+      <option value="symbolic">Symbolic Rule Lab</option><option value="compositional">Composition Lab</option>
+      <option value="grid_toy">Grid Transformation Lab</option></select></label>
+    <label>Strategy <select id="lab-strat">
+      <option value="state">Adaptive State — controlled model</option>
+      <option value="context">Context-conditioned baseline</option>
+      <option value="param_tta">Parameter TTA — toy parameterized model</option>
+      <option value="ttt_state">TTT State — learned state parameterization</option>
+      <option value="frozen">Frozen baseline — no adaptation</option></select></label>
+    <label>Seed <input id="lab-seed" type="number" value="7" min="0" max="999999"></label>
+    <label>Demos <input id="lab-nd" type="number" value="4" min="1" max="16"></label>
+    <label>Noise <input id="lab-noise" type="number" value="0" min="0" max="1" step="0.05"></label>
+  </div>
+  <p class="row"><button id="lab-run" type="button">Run experiment</button></p>
+  <div id="lab-out" aria-live="polite"></div>
+  <h3>Vetted research results <span class="badge pre">PRECOMPUTED</span></h3>
+  <p class="row"><select id="pre-sel" aria-label="Precomputed experiment">
+    <option value="008_intervention_linear">E8 intervention (linear)</option>
+    <option value="005_interference_linear">E5 interference (linear)</option>
+    <option value="004_state_capacity_linear">E4 capacity proxy (linear)</option>
+    <option value="003_compute_scaling_linear">E3 compute scaling</option>
+    <option value="009_learned_intervention">E8 learned substrate</option>
+    <option value="009_mechanistic">Probing / transfer / extrapolation</option>
+  </select> <button id="pre-run" type="button">Load</button></p>
+  <div id="pre-out"></div>
+</section>
+
+<!-- ============ STAGE 8 : RESULTS ============ -->
+<section id="stage-results" class="card" aria-labelledby="h-res">
+  <h2 id="h-res">Results — what did you learn?</h2>
+  <div id="posttest"></div>
+  <p class="row"><button id="posttest-score" type="button">Score post-test</button>
+  <span id="posttest-out" aria-live="polite"></span></p>
+  <div id="scoreboard" aria-live="polite"></div>
+  <p class="row"><button id="export" type="button">Export anonymous session (JSON)</button></p>
+  <p class="dim">One-minute truth test (no peeking): what did changing the number of demonstrations do, and why?
+  If you can answer, the core loop worked. If not — the experiment needs fixing, not the text.</p>
+</section>
+</main>
+
+<footer>
+  <p>AdaptLab · Phase 3 release candidate · engine: adapt-v2 + taskgen-v2 ·
+  <span class="badge live">LIVE</span> computed now ·
+  <span class="badge pre">PRECOMPUTED</span> vetted research run ·
+  <span class="badge syn">SYNTHETIC</span> procedurally generated task ·
+  <span class="badge pub">PUBLISHED RESULT</span> paper-reported ·
+  <span class="badge ill">ILLUSTRATIVE</span> diagram, not model output</p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

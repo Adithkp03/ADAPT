@@ -1,19 +1,19 @@
 # D2 — Terminology & Concept Map — ADAPT
 
-**Phase:** 1 | **Version:** 1.0 | **Date:** 2026-09-06
+**Phase:** 1 | **Version:** 1.1 (hardened per review 2026-09-06) | **Date:** 2026-09-06
 
-This document is normative. Every claim in the artifact must use terms as defined here.
+This document defines ADAPT WORKING DEFINITIONS. They are an internal abstraction for this project, not a claim about universally accepted terminology. Each paper's own terminology is preserved in research/literature/evidence_matrix.csv. Every claim in the artifact must use terms as defined here and carry an evidence label.
 
 ---
 
 ## 1. Core equations
 
-### In-Context Learning (frozen)
+### In-Context Learning (ADAPT working definition)
 ```
 y = f_theta(D, x)
-theta' = theta   (no change)
+theta' = theta   (no explicit inference-time parameter update)
 ```
-Task info via conditioning; computation changes, parameters do not.
+ICL conditions computation on demonstrations WITHOUT an explicit inference-time parameter update. Task-specific information may be represented through activations, attention computations, internal state, or an implicit learned algorithm — NOT one canonical substrate. In particular, Transformer ICL can implement algorithmic / optimization-like computations internally without explicit parameter updates (von Oswald et al. 2023). Do NOT state ICL stores info only in context.
 
 ### Meta-learning (MAML-style, for contrast)
 ```
@@ -75,8 +75,9 @@ No inference-time parameter update in described mechanism; effort scales via K.
 ## 3. Term glossary (alphabetical)
 
 - **Adaptation substrate:** where transient task info lives (context/state/weights).
-- **ARC (Abstraction & Reasoning Corpus):** few-shot grid-transformation benchmark; input->output demonstrations, hidden rule, exact ground truth.
-- **BDH:** Brain-inspired Distributed Hebbian (?) — Pathway frontier architecture: scale-free graph, sparse positive activations, synaptic plasticity/Hebbian memory.
+- **ARC family (distinguish always):** ARC-AGI (general benchmark family) vs ARC-AGI-1 (public eval set used by BDH-CQ) vs ARC-AGI-2 (harder successor) vs OUR ARC-LIKE SYNTHETIC TASKS (our generator; never claim as official ARC). BDH-CQ 29.5% refers strictly to ARC-AGI-1 public eval, 150M config.
+- **State capacity (operational proxy):** we manipulate state dimensionality d_s as an OPERATIONAL PROXY for adaptive-state capacity, NOT capacity itself. Dimension != effective capacity (dynamics/compression/bottlenecks/regularization matter).
+- **BDH:** Dragon Hatchling (BDH) — Pathway post-Transformer architecture (Kosowski et al. 2025): scale-free graph of neuron particles, sparse positive activations, Hebbian synaptic working memory. We do NOT expand the acronym beyond the published name.
 - **BDH-CQ:** BDH variant combining ICL with recurrent latent reasoning; 150M 29.5% pass@2 ARC-AGI-1 @ $0.0007/task (reported, specific setup — do not generalize).
 - **Conditioning:** changing output by changing input, not parameters.
 - **Demonstration (D):** one (x_i,y_i) example of hidden rule R.

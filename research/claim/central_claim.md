@@ -1,6 +1,6 @@
 # D5 — Central Claim Specification
 
-**Phase 1 | v1.0 2026-09-06 | Status: candidate (freeze after Phase 2 prototype)**
+**Phase 1 | v1.1 2026-09-06 | Status: CANDIDATE HYPOTHESIS / PREREGISTRATION PENDING — NOT frozen. Final wording freezes after Phase 2 prototype validation per go_no_go CONDITIONAL GO.**
 
 ---
 
@@ -65,3 +65,9 @@ See falsification_criteria.md
 > "Inference-time adaptation can succeed without persistent parameter changes, storing the new rule in evolving state — but that state's capacity and dynamics limit retention."
 
 (52 words; brief requires one precise falsifiable sentence — this is the short form of v2)
+
+## Claim-freeze semantics (added per review)
+
+- Frozen: scientific scope (topic, question, boundaries, task abstraction T=(R,D,Q,Y)).
+- Candidate: this claim (v2). It is a preregistration candidate, not a finding.
+- Writing "pre-registered" in markdown does not constitute preregistration; formal freeze occurs when statistical plan + episode protocol + reset rules are reviewed and hashed (see research/experiments/statistical_analysis_plan.md).

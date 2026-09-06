@@ -21,3 +21,22 @@ Sixty-second test: defined in learner_spec.md §8.
 Phase 1 exit question: "What exactly is TTA? Precise phenomenon? Falsifiable claim? Competing mechanisms? Which implemented? Distinguishing experiment? Variables? Ground truth? Failure mode? BDH contribution?" — answered in above docs.
 
 Status: READY FOR REVIEW
+
+## Hardening pass 2026-09-06 (per external review — CONDITIONAL GO)
+
+P0 fixed:
+- [x] Placeholder URLs replaced; source_validation.md added
+- [x] Go/No-Go -> CONDITIONAL GO (was premature unconditional GO)
+- [x] Scope FROZEN vs claim CANDIDATE split explicit
+- [x] ICL definition fixed (no single-substrate claim)
+- [x] BDH (?) removed -> Dragon Hatchling (BDH)
+- [x] E8 causal state-intervention added as primary experiment
+- [x] Reset/isolation formalized (reset_and_isolation.md + episode_protocol.md)
+- [x] Matrix one-paper-per-row; recency class column added
+
+P1 added:
+- [x] assumptions.md, open_questions.md, evidence_audit.md, source_validation.md, terminology_decisions.md
+- [x] statistical_analysis_plan.md (paired design, confirmatory vs exploratory, Holm), episode_protocol.md, data_leakage_policy.md
+- [x] H5 conditional wording; capacity as operational proxy; 60s as design target; predict-before-inspect flow
+
+Status: PHASE 1 CONDITIONALLY CLOSED — ready for Phase 2 protocol freeze (hash statistical plan + episode protocol + seeds before runs). No serious Phase 2 model code until freeze tag.

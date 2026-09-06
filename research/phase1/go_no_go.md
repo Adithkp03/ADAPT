@@ -1,3 +1,5 @@
+**Status: CONDITIONAL GO (revised 2026-09-06 per review — was incorrectly marked unconditional GO)**
+
 # D9 — Feasibility / Go-No-Go Review — Phase 1
 
 **Date:** 2026-09-06 | **Reviewers:** Scientific Lead + ML Lead | **Decision quorum:** Phase 1 exit
@@ -34,7 +36,11 @@
 - [x] Live vs precomputed boundaries defined
 - [x] Hypotheses pre-registered
 
-All criteria met — **GO to Phase 2**.
+NOT all criteria met at review time. Status: **CONDITIONAL GO to Phase 1 closure pass (no serious Phase 2 model implementation until blockers cleared).**
+
+Blockers: (1) citation integrity (placeholder URLs), (2) claim-freeze semantics, (3) causal state validation design, (4) reset/isolation formalization, (5) one-paper-per-row matrix, (6) statistical preregistration.
+
+This file is updated to CONDITIONAL GO; unconditional GO was premature (claim doc itself states candidate status).
 
 ## 4. Risk mitigations
 

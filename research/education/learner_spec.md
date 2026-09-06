@@ -98,7 +98,7 @@ UI must support this progression via Guide->Reveal->Manipulate->Sandbox.
 - Color not sole encoding (use labels + patterns)
 - No jargon without definition on first use (glossary linked)
 
-## 8. Sixty-second test (Pathway §60s)
+## 8. Sixty-second DESIGN TARGET (not proven outcome — validated in Phase 3 usability)
 
 0-10s: see unfamiliar task
 10-25s: manipulate demonstrations

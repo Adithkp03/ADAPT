@@ -1,6 +1,6 @@
 # Hypotheses — Pre-registered (Phase 1)
 
-**Date:** 2026-09-06 | **Status:** pre-registered, not yet tested
+**Date:** 2026-09-06 | **Status:** CANDIDATE hypotheses (preregistration pending formal freeze of statistical plan + episode protocol; writing 'pre-registered' here does not constitute preregistration)
 
 ## H1 — Evidence amount
 More demonstrations improve adaptation performance up to saturation.
@@ -18,8 +18,8 @@ Test: sweep K 0..16, measure A(K) and latency.
 Recurrent state adaptation can acquire unseen rule without changing persistent parameters (Delta_theta=0, Delta_s>0, G>0).
 Test: compare B4 vs B1/B2 on Tier1-3.
 
-## H5 — Interference
-Learning task B after A reduces accuracy on A (Retention < Initial) for finite state.
+## H5 — Interference (conditional)
+Finite adaptive memory MAY create an adaptation-retention trade-off under sufficiently demanding or interfering sequences. Absence of interference means the regime did not stress the capacity boundary — not a core-claim failure.
 Test: A -> B -> A protocol.
 
 ## H6 — No universal winner

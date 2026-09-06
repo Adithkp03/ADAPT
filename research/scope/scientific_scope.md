@@ -5,7 +5,7 @@
 **Supporting concept:** Skill Acquisition from Demonstrations
 **Phase:** 1 — Scientific Specification
 **Version:** v1.0 — 2026-09-06
-**Status:** Frozen for Phase 1
+**Status:** FROZEN (scope only). Central claim itself is a CANDIDATE HYPOTHESIS — see research/claim/central_claim.md. Final claim wording freezes after Phase 2 prototype validation.
 
 ---
 
@@ -32,7 +32,7 @@ Sub-questions (decomposed):
 7. Is update learned? — fixed rule / learned update / optimizer
 8. Can we inspect it? — high / medium / low
 
-## 3. Working thesis (to be validated in Phase 2)
+## 3. Working thesis — CANDIDATE (not frozen; validated in Phase 2)
 
 > **Inference-time adaptation can acquire task-specific behavior without permanently changing trained parameters, but the choice of adaptation substrate — context, recurrent state, or parameter updates — determines its capacity, cost, persistence, and susceptibility to interference.**
 

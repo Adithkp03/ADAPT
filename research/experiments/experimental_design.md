@@ -1,6 +1,6 @@
 # D7 — Experimental Design Specification
 
-**Phase 1 | v1.0 2026-09-06**
+**Phase 1 | v1.1 hardened 2026-09-06 (E8 causal intervention + reset rules + tiering)**
 
 > Exactly what experiment are we going to run?
 
@@ -109,6 +109,21 @@ Measure Retention_A. H5: finite memory -> interference trade-off. Core failure e
 ### E6 — Conflicting evidence
 Demonstrations support competing rules; control conflict level. Tests robustness/ambiguity.
 
+### E8 — Adaptive State Causal Intervention (PRIMARY, added per review)
+After adaptation to task A obtain state s_A. Measure A(s_A) on query. Then intervene: s_tilde in {zeroed, shuffled, noise-perturbed, swapped from task B}. Measure A(s_tilde) on SAME query. Then restore s_A and confirm recovery.
+```
+adapt A -> s_A -> query -> A(s_A)
+perturb/erase s_A -> same query -> A drops?
+restore s_A -> query -> recovers?
+```
+If destroying adapted state destroys performance and restoring recovers it, state is causally necessary — far stronger than correlation Delta_s vs gain. This is a Phase 2 primary experiment alongside acquisition and interference.
+
+Experiment tiers:
+- CORE (in final artifact): acquisition (E1), state intervention (E8), interference (E5)
+- SUPPORTING (lab): demonstration scaling (E2), capacity proxy (E3), compute (E4)
+- FRONTIER EXTENSION: ARC-like (Tier 5), conflicting evidence (E6), transfer (E7)
+Research engine may be broad; educational artifact stays narrow.
+
 ### E7 — Novel-task transfer
 New family not in tutorial; learner predicts best substrate, runs. Tests transfer, not recognition.
 
@@ -162,3 +177,11 @@ Every chart shows truth beside estimate (model prediction vs Y). No human judgin
 ## 13. Exit gate Phase 2
 
 Same task, same seed, different adaptation strategies -> results reproducibly differ (Delta_theta/Delta_s and accuracy diverge as predicted).
+
+## Reset, isolation and oracle rules (added per review)
+
+- Episodic reset (default isolated adaptation): theta_i^(0)=theta_0 and s_i^(0)=s_0 for every task episode i.
+- Param TTA: after Task A, theta_A MUST NOT leak as init for Task B in non-continual runs; reset to theta_0.
+- Continual/interference mode: deliberate carry-over explicitly enabled and logged (mode flag in config).
+- Oracle B0 (y=R(Q)) is evaluation ceiling / ground-truth generator ONLY; never a model benchmark, never contributes to learning claims.
+- B1 frozen gets NO demonstrations (y=f_theta(Q)); B2 context gets D (y=f_theta(D,Q)). Same-theta comparison isolates the value of D. State this explicitly in every report.

@@ -18,6 +18,11 @@ from .telemetry import (is_correct, accuracy_ci, paired_diff_ci,
                         mcnemar_exact, cohen_h)
 from .evidence import evidence_for
 
+# Machine-readable result schema version (review Patch 6). Bump on any
+# breaking change to the run()/run_interference()/run_intervention()
+# result dict layout; Phase 3 readers MUST check this field.
+RESULT_SCHEMA_VERSION = 1
+
 
 
 def _git_commit():
@@ -124,7 +129,8 @@ def run(config):
     }
     return {"config": config, "summary": summary, "diffs": diffs,
             "provenance": prov,
-            "evidence_type": evidence_for(strats)}
+            "evidence_type": evidence_for(strats),
+            "result_schema_version": RESULT_SCHEMA_VERSION}
 
 
 def run_interference(config):
@@ -189,7 +195,8 @@ def run_interference(config):
             "platform": __import__("platform").platform(),
             "seeds": seeds, "wall_s": float(time.perf_counter() - t_start)}
     return {"config": config, "summary": out, "diffs": {},
-            "provenance": prov, "evidence_type": "TOY_EXPERIMENT"}
+            "provenance": prov, "evidence_type": "TOY_EXPERIMENT",
+            "result_schema_version": RESULT_SCHEMA_VERSION}
 
 
 def run_intervention(config):
@@ -300,7 +307,8 @@ def run_intervention(config):
             "platform": __import__("platform").platform(),
             "seeds": seeds, "wall_s": float(time.perf_counter() - t_start)}
     return {"config": config, "summary": out, "diffs": {},
-            "provenance": prov, "evidence_type": "TOY_EXPERIMENT"}
+            "provenance": prov, "evidence_type": "TOY_EXPERIMENT",
+            "result_schema_version": RESULT_SCHEMA_VERSION}
 
 
 def run_with_protocol(config):

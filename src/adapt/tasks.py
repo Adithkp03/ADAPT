@@ -18,7 +18,7 @@ import numpy as np
 GENERATOR_VERSION = "taskgen-v2"
 FAMILIES = ["linear", "quadratic", "symbolic", "compositional", "grid_toy"]
 # back-compat alias for Phase 2A configs/results
-FAMILY_ALIASES = {"arc_like": "grid_toy"}
+FAMILY_ALIASES = {"arc_like": "grid_toy", "grid_transform": "grid_toy"}
 SPLITS = ["train", "val", "test"]
 SPLIT_ALIASES = {"eval": "test"}  # back-compat (Phase 2A)
 

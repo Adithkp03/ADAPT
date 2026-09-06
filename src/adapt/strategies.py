@@ -29,6 +29,29 @@ import numpy as np
 
 MODEL_VERSION = "adapt-v2"
 
+# Phase 3 public terminology (review gate): honest UI-facing names.
+# Internal strategy keys are unchanged; the frontend MUST use these.
+STRATEGY_DISPLAY = {
+    "frozen": "Frozen baseline — no adaptation",
+    "context": "Context-conditioned baseline",
+    "param_tta": "Parameter TTA — toy parameterized model",
+    "state": "Adaptive State — controlled model",
+    "ttt_state": "TTT State — learned state parameterization",
+    "learned_state": "Adaptive State — learned recurrent model",
+    "learned_tta": "Parameter TTA — learned backbone model",
+    "learned_ttt": "TTT State — learned backbone model",
+}
+
+# Family display names. grid_toy MUST appear as "Grid Transformation
+# Lab" in any public surface — never "ARC Reasoning".
+FAMILY_DISPLAY = {
+    "linear": "Linear Rule Lab",
+    "quadratic": "Quadratic Rule Lab",
+    "symbolic": "Symbolic Rule Lab",
+    "compositional": "Composition Lab",
+    "grid_toy": "Grid Transformation Lab",
+}
+
 
 class AdaptationStrategy:
     name = "base"

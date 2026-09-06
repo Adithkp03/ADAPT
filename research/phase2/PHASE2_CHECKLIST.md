@@ -20,3 +20,11 @@
 - Pathway compliance: synthetic labeled; toy labeled TOY_EXPERIMENT; nothing claimed as official BDH; live/precomputed boundaries in place (all current results LIVE computation) — YES
 
 ## Milestones 2.1-2.10: all met. Gate: GO -> Phase 3.
+
+## Freeze patches (review gate, applied)
+- P1 quadratic predictor: TRUE 3x3 normal-equation fit (test_quadratic_state_fits_quadratic) — verified present.
+- P2 honest naming: AnalyticalContext / GradientTaskLearner / SufficientStatState + STRATEGY_DISPLAY public names (frontend MUST use); FAMILY_DISPLAY pins "Grid Transformation Lab".
+- P3 grid alias: grid_transform -> grid_toy (arc_like kept back-compat); NEVER "ARC Reasoning" in public surface.
+- P4 config-driven hyperparams: steps/lr/state_dim/seed/tol all flow config -> strategy_kwargs; quadratic 0.1 inner damping is a documented model-definition constant, not a tunable.
+- P5 latency split: t_adapt_ms / t_predict_ms / latency_ms (= sum) asserted in test_freeze_gate; CPU wall-clock is NOT a neural-inference cost claim.
+- P6 result_schema_version: 1 on all three protocols (standard/interference/intervention).

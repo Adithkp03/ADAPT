@@ -1,0 +1,7 @@
+strategy,accuracy,mean_persistent_delta,mean_state_delta,n
+frozen,0.11,0.0,0.0,200
+context,1.0,0.0,0.0,200
+state,1.0,0.0,61.616,200
+learned_state,0.09,0.0,2.352,200
+learned_tta,0.26,2.072,0.0,200
+learned_ttt,0.445,0.0,3.192,200

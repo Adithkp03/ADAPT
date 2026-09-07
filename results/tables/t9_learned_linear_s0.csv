@@ -1,0 +1,7 @@
+strategy,accuracy,n
+frozen,0.11,200
+context,1.0,200
+state,1.0,200
+learned_state,0.09,200
+learned_tta,0.26,200
+learned_ttt,0.445,200

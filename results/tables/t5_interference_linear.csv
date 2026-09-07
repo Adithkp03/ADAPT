@@ -1,0 +1,5 @@
+strategy,acc_A_initial,acc_B,retention_A,retention_drop,n
+context,1.0,1.0,0.03,0.97,100
+param_tta,0.3,0.28,0.1,0.19999999999999998,100
+state,1.0,0.11,0.1,0.9,100
+ttt_state,0.3,0.28,0.1,0.19999999999999998,100

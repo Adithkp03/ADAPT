@@ -1,0 +1,14 @@
+# ADAPT reproduction environment (conda, Python 3.11)
+# CLI: conda env create -f repro/environment.yml
+name: adapt-repro
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.*
+  - numpy>=1.24
+  - pyyaml>=6.0
+  - matplotlib>=3.7
+  - pytest>=7.0
+# torch is NOT in the learner path (stdlib server + numpy).
+# It is only needed for the BDH R1/R2 reproductions — see
+# research/bdh/reproductions/README.md for those pinned env notes.

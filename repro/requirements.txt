@@ -1,0 +1,12 @@
+# ADAPT learner-path experiment dependencies (closest pinned to the
+# reference environment; floor comments match requirements.txt).
+numpy>=1.24
+pyyaml>=6.0
+matplotlib>=3.7
+pytest>=7.0
+
+# BDH R1/R2 reproductions require torch (2.14.0+cpu on the reference
+# machine) plus the einx module used by the official bdh repo.
+# Those are documented separately in research/bdh/reproductions/README.md
+# because they are NOT part of the learner path and einx is only needed
+# when running the official bdh repo directly.

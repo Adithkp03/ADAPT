@@ -1,0 +1,18 @@
+# D5.3 — seeds used across the ADAPT experiment suite.
+# Every result.json records its own seed(s) in `provenance`. This index
+# is the human-readable master list. Seed-disjointness policies live in
+# research/experiments/data_leakage_policy.md and reset_and_isolation.md.
+
+experiment,seeds,notes
+E1 task acquisition (linear/symbolic/arc-like),0-199 paired (split eval->test),same task pool across strategies; result report splits test pool (D4.8)
+E2 demo scaling,0-99 per N_D point,identical tasks across N_D
+E3 compute scaling,0-99 pairs,fixed tasks, varying steps K
+E4 state capacity,0-99 pairs,capacity proxy via project-and-reconstruct (d_s in None/4/2/1)
+E5 interference A->B->A,0-99 per (seedA,seedB) pair,distinct rules; linear + symbolic
+E6 noise,0-99 per eps point,eps in 0..0.35
+E7 complexity,fixed config seeds,frozen configs in experiments/configs
+E8 intervention,0-99,5 perturbations (zero/shuffle/noise/swap/nullmean) + restore
+E9 learned trio,0/1 (model_seed),meta-training seeds; frozen checkpoints learned_*_s{0,1}.npz
+E10 (live flagship),per-request seed (UI),seed passed by learner; split=test draw
+pilot study,n/a,anon-pilot01 fixture (tests/fixtures/pilot_session.json)
+BDH R1/R2,n/a,official repos at pinned commits (bdh@2b0d7a4, bdh-cq@c246f89)

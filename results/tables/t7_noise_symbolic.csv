@@ -1,0 +1,16 @@
+noise,strategy,accuracy,n
+0.0,context,1.0,100
+0.0,param_tta,1.0,100
+0.0,state,1.0,100
+0.05,context,1.0,100
+0.05,param_tta,1.0,100
+0.05,state,1.0,100
+0.1,context,0.98,100
+0.1,param_tta,0.98,100
+0.1,state,0.98,100
+0.2,context,0.84,100
+0.2,param_tta,0.84,100
+0.2,state,0.84,100
+0.35,context,0.56,100
+0.35,param_tta,0.56,100
+0.35,state,0.56,100

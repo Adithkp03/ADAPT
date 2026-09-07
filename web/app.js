@@ -95,7 +95,7 @@ async function flagRun() {
       <p>The behavior was acquired while persistent parameters stayed fixed (Δθ = 0, Δs ≠ 0). <strong>Where did the new rule go?</strong></p>
       ${provHTML(r.provenance, { split: "test" })}`;
     mechQuiz();
-  } catch (e) { $("flag-out").innerHTML = `<p class="no">Error: ${esc(e.message)} (is the server running?)</p>`; }
+  } catch (e) { $("flag-out").innerHTML = `<div class="no" role="alert"><strong>Experiment unavailable</strong> — system error, not a model failure. ${esc(e.message)} <button type="button" id="flag-retry">Retry</button></div>`; if ($("flag-retry")) $("flag-retry").onclick = flagRun; }
   btn.disabled = false;
 }
 function mechQuiz() {

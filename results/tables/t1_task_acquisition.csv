@@ -1,0 +1,14 @@
+experiment,family,strategy,accuracy,mean_persistent_delta,mean_state_delta,n
+E1 task acquisition,linear,frozen,0.11,0.0,0.0,200
+E1 task acquisition,linear,context,1.0,0.0,0.0,200
+E1 task acquisition,linear,param_tta,0.255,1.976,0.0,200
+E1 task acquisition,linear,state,1.0,0.0,61.616,200
+E1 task acquisition,linear,ttt_state,0.255,0.0,1.976,200
+E1 task acquisition,symbolic,frozen,0.0,0.0,0.0,200
+E1 task acquisition,symbolic,context,1.0,0.0,0.0,200
+E1 task acquisition,symbolic,param_tta,1.0,3.032,0.0,200
+E1 task acquisition,symbolic,state,1.0,0.0,4.049,200
+E1 task acquisition,arc_like,frozen,0.0,0.0,0.0,200
+E1 task acquisition,arc_like,context,1.0,0.0,0.0,200
+E1 task acquisition,arc_like,param_tta,1.0,2.387,0.0,200
+E1 task acquisition,arc_like,state,1.0,0.0,3.0,200

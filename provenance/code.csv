@@ -1,0 +1,9 @@
+path,origin,license,modification,usage,attribution
+src/adapt/*.py,written for this project (Phases 1-4),to be set by team (recommend MIT/Apache-2.0),n/a,experiment engine + task generators,team
+server.py,written for this project (Phase 3),to be set by team (same as above),n/a,stdlib HTTP API + static frontend,team
+web/index.html + app.js + styles.css,written for this project (Phase 3),to be set by team (same as above),n/a,learning experience,team
+experiments/*.py,written for this project (Phases 2/4),to be set by team (same as above),n/a,sweep + reproduction runners,team
+scripts/*.py,written for this project (Phases 3-5),to be set by team (same as above),n/a,analysis + perf probe,team
+tests/*.py,written for this project (Phases 2-5),to be set by team (same as above),n/a,verification suite,team
+research/bdh/*_dossier.md + equations.md + concept_mapping.md,team synthesis from primary papers (BDH arXiv 2025; BDH-CQ arXiv 2026; Equations of Reasoning),prose is ours; underlying facts cited per-row,to be set by team (same as above),frontier bridge content,team synthesis — cite original papers for the science
+research/literature/evidence_matrix.csv,team readings of listed papers,prose is ours; facts cited per-row,to be set by team (same as above),citation backbone,team — each row names its source paper

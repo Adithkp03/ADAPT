@@ -1,0 +1,15 @@
+substrate,metric,value
+analytical_state,probe_mse,0.4148
+analytical_state,chance_mse,3.6841
+analytical_state,mse_ratio,0.1126
+analytical_state,transfer_acc,1.0
+analytical_state,transfer_n,250
+analytical_state,interp_acc,1.0
+analytical_state,extrap_acc,1.0
+learned_state,probe_mse,1.7593
+learned_state,chance_mse,3.6841
+learned_state,mse_ratio,0.4775
+learned_state,transfer_acc,0.084
+learned_state,transfer_n,250
+learned_state,interp_acc,0.07
+learned_state,extrap_acc,0.0

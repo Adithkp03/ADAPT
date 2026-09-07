@@ -1,0 +1,14 @@
+family,strategy,accuracy,n
+linear,context,1.0,100
+linear,param_tta,0.3,100
+linear,state,1.0,100
+quadratic,context,1.0,100
+quadratic,param_tta,0.19,100
+quadratic,state,1.0,100
+quadratic,ttt_state,0.19,100
+symbolic,context,1.0,100
+symbolic,param_tta,1.0,100
+symbolic,state,1.0,100
+compositional,context,0.42,100
+compositional,param_tta,0.12,100
+compositional,state,0.28,100

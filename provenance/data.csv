@@ -1,0 +1,7 @@
+dataset,origin,generator,license,splits,usage,notes
+synthetic linear tasks,procedural (src/adapt/tasks.py taskgen-v2),seeded RNG — no external data,unencumbered (generated),train/val/test by seed-disjoint continuous rules,E1-E9 + live flagship,held-out = fresh rules per seed; see data_leakage_policy.md
+synthetic symbolic tasks,procedural (taskgen-v2),seeded RNG,unencumbered (generated),disjoint offset pool per split (train 1-3 / val 4-7 / test 5-6),E1/E2/E5/E6 + live lab,disjoint pools — strongest holdout in the suite
+synthetic compositional tasks,procedural (taskgen-v2),seeded RNG,unencumbered (generated),disjoint op pool; test allows depth 3,transfer challenge + E-phase,unseen-family transfer test
+synthetic grid_toy tasks,procedural (taskgen-v2),seeded RNG,unencumbered (generated),disjoint transform pool (test: shift_color only),ARC-like proxy + frontier mode,proxy only — never presented as ARC-AGI
+ARC-AGI public eval (BDH-CQ number only),BDH-CQ authors' reported result — we did NOT evaluate on ARC-AGI ourselves,ARC prize / Chollet & Chollet,cited as PUBLISHED RESULT with scope guard,BDH-CQ 150M 29.5% pass@2; our ARC-like work uses the grid_toy proxy,do not conflate our proxy with ARC-AGI scores
+learner session JSONs (study pending),participant exports (anonymous anon-ids),in-app export,consent-scoped research data — do not publish without consent record,D5.8 learning study,only pilot fixture exists (tests/fixtures/pilot_session.json)

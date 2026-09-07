@@ -1,0 +1,6 @@
+model_or_checkpoint,origin,training,license,status,usage,checkpoint_hash_or_pin
+controlled strategies (state/context/param_tta/ttt_state/frozen),hand-specified dynamical systems — no training (Δθ=0 by construction),none (analytic),n/a (our code),frozen (model versions in strategies.py),all live endpoints + flagship,version string in provenance envelope
+learned trio (learned_state/learned_tta/learned_ttt),meta-trained by team (Phase 2B E9 protocol),synthetic linear distribution only; frozen at inference,checkpoints are ours; base libs per third_party.csv,frozen (checkpoints/learned_*_s0.npz),Research Lab linear-only section,re-validate per E9 protocol before replacing
+BDH (frontier reference),Kosowski et al. 2025 + pathwaycom/bdh repo,authors' training (not ours),see repo/paper license — NOT redistributed here,referenced only (no weights in repo),dossier + R1 reproduction (pin bdh@2b0d7a4),pin recorded in R1_results.md
+BDH-CQ (frontier reference),Engdahl et al. 2026,authors' training (not ours),see paper license — NOT redistributed here,referenced only (no weights in repo),dossier + R2 reproduction (pin bdh-cq@c246f89),pin recorded in R2_results.md
+torch 2.14.0+cpu (repro env only),PyTorch project,not trained here,BSD-style (see pytorch.org),dev dependency for R1/R2 only,excluded from learner path (stdlib server + numpy),pinned in repro/requirements.txt

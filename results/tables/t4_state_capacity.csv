@@ -1,0 +1,9 @@
+state_dim,strategy,accuracy,mean_persistent_delta,mean_state_delta,n
+state_dim=None,state,1.0,0.0,62.649,100
+state_dim=None,context,1.0,0.0,0.0,100
+state_dim=4,state,0.15,0.0,55.226,100
+state_dim=4,context,1.0,0.0,0.0,100
+state_dim=2,state,0.08,0.0,37.305,100
+state_dim=2,context,1.0,0.0,0.0,100
+state_dim=1,state,0.09,0.0,28.453,100
+state_dim=1,context,1.0,0.0,0.0,100

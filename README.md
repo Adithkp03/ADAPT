@@ -5,7 +5,7 @@ laboratory on inference-time adaptation, with exact ground truth,
 full provenance, and a rigorous, honestly-labelled connection to the
 BDH / BDH-CQ frontier.
 
-Reference implementation commit: `66cebd7`.
+Reference implementation commit: `2824303`.
 
 ## What this is
 

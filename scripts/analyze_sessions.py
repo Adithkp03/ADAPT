@@ -8,7 +8,9 @@ rubric.csv (optional, hand-scored): session_id,explain_a,explain_b
   explain_b: describes interference as overwrite/competition (0/1)
 
 Prints: N, pre/post means, per-LO gain, normalized gain, transfer score,
-time-to-first-run, time-to-correct-mechanism, prediction accuracy by event.
+time-to-first-run, time-to-correct-mechanism, prediction accuracy by event,
+and the D4.9 educational-validation signals: BDH-CQ order-quiz accuracy
+(LO6) and the in-lab mechanism-distinction checks (mech_quiz / bdh_quiz).
 """
 import glob
 import json
@@ -61,6 +63,12 @@ def main(paths, rubric_path=None):
             None)
         t_mech = next((e["t"] for e in evs if e["ev"] == "mech_quiz"
                        and e["d"].get("ok")), None)
+        # D4.9: BDH-CQ order quiz (LO6) + mechanism-distinction checks
+        bdh_left = [e for e in evs if e["ev"] == "bdh_quiz"]
+        mech_all = [e for e in evs if e["ev"] == "mech_quiz"]
+        bdh_left_n = len(bdh_left)
+        bdh_left_ok = sum(1 for e in bdh_left if e["d"].get("ok"))
+        mech_ok = sum(1 for e in mech_all if e["d"].get("ok"))
         preds = [e for e in evs if e["ev"] in ("nd_predict", "ret_predict")]
         t0 = evs[0]["t"] if evs else None
         gain = (post - pre) if pre is not None and post is not None else None
@@ -71,7 +79,9 @@ def main(paths, rubric_path=None):
               f"g_norm={None if g is None else round(g, 3)} "
               f"t_first_run_s={sec(None if t_first_run is None or t0 is None else t_first_run - t0)} "
               f"t_mech_ok_s={sec(None if t_mech is None or t0 is None else t_mech - t0)} "
-              f"pred_events={len(preds)} explain_rubric={rub}")
+              f"pred_events={len(preds)} explain_rubric={rub} "
+              f"bdh_order_quiz={bdh_left_ok}/{bdh_left_n} "
+              f"mech_checks={mech_ok}/{len(mech_all)}")
     if not sessions:
         return
     if lo_acc:
@@ -87,6 +97,22 @@ def main(paths, rubric_path=None):
     else:
         print("\nNOTE: no item-level pre/post detail — totals only "
               "(sessions exported before the item-logging fix).")
+
+    # D4.9 aggregate: BDH-CQ order quiz + mechanism distinction
+    bdh_ok = sum(1 for s in sessions
+                 for e in s.get("events", [])
+                 if e["ev"] == "bdh_quiz" and e["d"].get("ok"))
+    bdh_n = sum(1 for s in sessions
+                for e in s.get("events", []) if e["ev"] == "bdh_quiz")
+    mech_ok = sum(1 for s in sessions
+                  for e in s.get("events", [])
+                  if e["ev"] == "mech_quiz" and e["d"].get("ok"))
+    mech_n = sum(1 for s in sessions
+                 for e in s.get("events", []) if e["ev"] == "mech_quiz")
+    print(f"\nD4.9 educational-validation signals (all sessions):")
+    print(f"  BDH-CQ order quiz (LO6): {bdh_ok}/{bdh_n} correct")
+    print(f"  Mechanism-distinction checks (mech_quiz): "
+          f"{mech_ok}/{mech_n} correct")
 
 
 if __name__ == "__main__":

@@ -10,23 +10,23 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-WEB_HTML = (ROOT / "web" / "index.html").read_text()
-WEB_JS = (ROOT / "web" / "app.js").read_text()
-WEB_CSS = (ROOT / "web" / "styles.css").read_text()
-SERVER = (ROOT / "server.py").read_text()
+WEB_HTML = (ROOT / "web" / "index.html").read_text(encoding="utf-8")
+WEB_JS = (ROOT / "web" / "app.js").read_text(encoding="utf-8")
+WEB_CSS = (ROOT / "web" / "styles.css").read_text(encoding="utf-8")
+SERVER = (ROOT / "server.py").read_text(encoding="utf-8")
 
 
 def test_d31_learning_spec_present():
     p = ROOT / "research" / "education" / "learning_experience_spec.md"
     assert p.exists()
-    t = p.read_text()
+    t = p.read_text(encoding="utf-8")
     assert "STATE 0" not in t  # compressed state machine ok...
     for key in ["misconception", "Transfer", "LO1"]:
         assert key.lower() in t.lower(), key
 
 
 def test_d32_interaction_model_covers_controls():
-    t = (ROOT / "research" / "education" / "interaction_model.md").read_text()
+    t = (ROOT / "research" / "education" / "interaction_model.md").read_text(encoding="utf-8")
     for key in ["N_D", "/api/episode", "/api/sweep", "/api/interference",
                 "/api/intervene", "precomputed", "learned_tta"]:
         assert key in t, key
@@ -38,11 +38,11 @@ def test_d33_design_trilogy():
                  "interaction_patterns.md"]:
         p = ROOT / "design" / name
         assert p.exists(), name
-    vs = (ROOT / "design" / "visual_system.md").read_text()
+    vs = (ROOT / "design" / "visual_system.md").read_text(encoding="utf-8")
     assert "LIVE" in vs and "PRECOMPUTED" in vs and "aria-live" in vs
-    sv = (ROOT / "design" / "state_visualization.md").read_text()
+    sv = (ROOT / "design" / "state_visualization.md").read_text(encoding="utf-8")
     assert "Δθ" in sv and "Forbidden" in sv
-    ip = (ROOT / "design" / "interaction_patterns.md").read_text()
+    ip = (ROOT / "design" / "interaction_patterns.md").read_text(encoding="utf-8")
     assert "Predict" in ip and "Sandbox" in ip
 
 
@@ -104,7 +104,7 @@ def test_d310_badges_and_provenance():
 
 
 def test_d311_evaluation_plan_and_instrumentation():
-    t = (ROOT / "docs" / "phase3_design_report.md").read_text()
+    t = (ROOT / "docs" / "phase3_design_report.md").read_text(encoding="utf-8")
     assert "D3.11" in t and "pre/post" in t.lower()
     assert "session_start" in WEB_JS and "JSON" in WEB_JS  # event log export
     assert "misconception" in t.lower()
@@ -116,7 +116,7 @@ def test_d312_release_candidate_hygiene():
     assert "/api/" in WEB_JS
     assert "offline" in WEB_HTML.lower() or \
         "no build, no CDN" in (ROOT / "docs" /
-                               "phase3_design_report.md").read_text()
+                               "phase3_design_report.md").read_text(encoding="utf-8")
 
 
 def test_computational_no_fake_logic_in_frontend():

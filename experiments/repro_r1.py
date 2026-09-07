@@ -49,7 +49,8 @@ try:
     with torch.no_grad():
         prompts = torch.randint(0, 256, (1, 16))
         out = w(prompts, 4, return_memory=True)
-    mems = out[2] if isinstance(out, tuple) else None
+    assert isinstance(out, tuple) and len(out) == 2, type(out)
+    mems = out[1]
     n_mem = (len(mems) if mems is not None else 0)
     assert n_mem > 0, "no memories surfaced"
     lines += ["## bdh-cq wrapper (third-party WIP): PASS",
@@ -67,5 +68,5 @@ except Exception as e:
     print("bdh-cq FAIL:", repr(e))
 
 out = ROOT / "research" / "bdh" / "reproductions" / "R1_results.md"
-out.write_text("\n".join(lines))
+out.write_text("\n".join(lines), encoding="utf-8")
 print("wrote", out, "OVERALL:", "PASS" if ok else "FAIL")

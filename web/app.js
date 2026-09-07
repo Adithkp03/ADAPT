@@ -247,13 +247,13 @@ $("e8-run").onclick = async () => {
 function etaUpd() { const v = +$("eta").value; $("eta-v").textContent = v.toFixed(2); $("eta-out").textContent = (v * 1 * 1).toFixed(3); $("sig-out").textContent = (0.14 + v).toFixed(3); }
 $("eta").oninput = etaUpd; etaUpd();
 const EOR = [
-  { t: "Round 4l — memory read", d: "The system updates its accumulator from current beliefs + new inputs + the causal relations stored in σ (modus ponens). Nothing is stored yet — this is the read." },
-  { t: "Round 4l+1 — memory write", d: "σ is reweighted with the outer (Hebbian) product of X and Y — the σ ← σ + η·X·Yᵀ step above. This is the write; try moving η and watch σ₁₂." },
-  { t: "Round 4l+2 — gated readout", d: "Y is read out from A for context-relevant neurons (A gated by X). Y is sparse and positive — most of the graph stays quiet." },
-  { t: "Round 4l+3 — state update", d: "Final update of X closes the loop. Fast pulse variables (X, A, Y) settle; the slow synaptic variable σ keeps what was written." }];
+  { t: "Round 4l — memory read", d: "The system updates its accumulator from current beliefs + new inputs + the causal relations stored in σ (modus ponens). Nothing is stored yet — this is the read.", s: "Equations of Reasoning §4, step 1" },
+  { t: "Round 4l+1 — memory write", d: "σ is reweighted with the outer (Hebbian) product of X and Y — the σ ← σ + η·X·Yᵀ step above (simplified educational form). This is the write; try moving η and watch σ₁₂.", s: "Equations of Reasoning §4, step 2" },
+  { t: "Round 4l+2 — gated readout", d: "Y is read out from A for context-relevant neurons (A gated by X). Y is sparse and positive — most of the graph stays quiet.", s: "Equations of Reasoning §4, step 3" },
+  { t: "Round 4l+3 — state update", d: "Final update of X closes the loop. Fast pulse variables (X, A, Y) settle; the slow synaptic variable σ keeps what was written.", s: "Equations of Reasoning §4, step 4" }];
 let eorI = 0;
 function eorRender() {
-  $("eor-step").innerHTML = `<p><strong>${esc(EOR[eorI].t)}</strong></p><p>${esc(EOR[eorI].d)}</p>`;
+  $("eor-step").innerHTML = `<p><strong>${esc(EOR[eorI].t)}</strong></p><p>${esc(EOR[eorI].d)}</p><p class="dim">Source: ${esc(EOR[eorI].s)}</p>`;
   $("eor-pos").textContent = `Round ${eorI + 1} of 4`;
   log("eor_step", { i: eorI });
 }

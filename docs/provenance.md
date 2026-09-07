@@ -14,6 +14,7 @@
 | Figures | `research/experiments/make_figures.py` | precomputed | PRECOMPUTED (+ SYNTHETIC ctx) | `research/experiments/figures/*.png` |
 | BDH-CQ 150M / 29.5% / $0.0007 | authors' paper, via dossier | published | PUBLISHED RESULT | `research/bdh/bdhcq_dossier.md` §4 |
 | BDH equation / architecture | paper + Equations of Reasoning, via dossier | published desc. | PUBLISHED RESULT | `research/bdh/bdh_dossier.md` |
+| R1 / R2 reproduction outputs | `experiments/repro_r1.py`, `experiments/repro_r2.py` | reproduced (CPU, random ids) | PUBLISHED/OFFICIAL (structure) + TOY_EXPERIMENT (probe) | `research/bdh/reproductions/R1_results.md`, `R2_results.md` (pins: bdh@`2b0d7a4`, bdh-cq@`c246f89`, torch 2.14.0+cpu) |
 | η → ‖Δσ‖ readout | local `η·1·1` in `app.js` | illustrative | ILLUSTRATIVE | labeled educational implementation |
 | Pre/post/in-situ scores | local quiz key comparison | local | n/a (learner's own) | keys in `app.js` (`PRE`/`POST` + evaluable mapping in `research/education/evaluation_plan.md`) |
 

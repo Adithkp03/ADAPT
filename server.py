@@ -31,6 +31,7 @@ from adapt import tasks as T
 from adapt import strategies as S
 from adapt import telemetry as TL
 from adapt.evidence import evidence_for
+from adapt.learned import MODEL_VERSION as LEARNED_MODEL_VERSION
 
 RESULTS = ROOT / "research" / "experiments"
 FIGURES = RESULTS / "figures"
@@ -102,6 +103,24 @@ def _fmt(family, v):
     return [[int(c) for c in row] for row in v]
 
 
+def _holdout(family):
+    """Rule-level holdout status per family (must-fix: no generalization
+    claim without this). Linear/quadratic draw fresh rules from a
+    continuous space (seed-disjoint, same distribution); the discrete
+    families use disjoint operation pools per split."""
+    if family in ("linear", "quadratic"):
+        return ("fresh continuous rule per seed (seed-disjoint, same "
+                "distribution across splits — not a disjoint rule pool)")
+    if family == "symbolic":
+        return "disjoint offset pool per split (train 1-3, val 4/7, test 5/6)"
+    if family == "compositional":
+        return ("disjoint op pool per split; test allows depth 3 "
+                "(train/val cap depth 2)")
+    if family == "grid_toy":
+        return "disjoint transform pool per split (test: shift_color only)"
+    return "see task generator"
+
+
 def _rule_text(family, rule):
     if family == "linear":
         return f"y = {rule['a']:.3f} x + {rule['b']:.3f} (hidden)"
@@ -123,7 +142,7 @@ def _prov(task, extra=None):
            "n_demos": len(task.demonstrations), "split": task.split}
     if extra:
         cfg.update(extra)
-    return {
+    prov = {
         "seed": task.seed, "split": task.split,
         "task_generator_version": T.GENERATOR_VERSION,
         "model_version": S.MODEL_VERSION,
@@ -131,6 +150,15 @@ def _prov(task, extra=None):
         "config_hash": R._config_hash(cfg),
         "result_schema_version": R.RESULT_SCHEMA_VERSION,
     }
+    if extra and extra.get("model_version"):
+        prov["model_version"] = extra["model_version"]
+    if extra and extra.get("checkpoint"):
+        prov["checkpoint"] = extra["checkpoint"]
+    return prov
+
+
+def _model_version(name):
+    return LEARNED_MODEL_VERSION if name in LEARNED_DEFAULT_CKPT else S.MODEL_VERSION
 
 
 def _episode_payload(task, strategy_name, skw):
@@ -149,6 +177,7 @@ def _episode_payload(task, strategy_name, skw):
                 for x, y in task.demonstrations],
             "query": _fmt(fam, task.query),
             "rule_hidden": _rule_text(fam, task.hidden_rule),
+            "holdout": _holdout(fam),
         },
         "strategy": strategy_name,
         "strategy_display": S.STRATEGY_DISPLAY.get(strategy_name,
@@ -170,7 +199,13 @@ def _episode_payload(task, strategy_name, skw):
             "loss_after": tel["loss_after"],
             "grad_norm": tel["grad_norm"],
         },
-        "provenance": _prov(task, {"strategy": strategy_name}),
+        "provenance": _prov(task, {
+            "strategy": strategy_name,
+            "model_version": _model_version(strategy_name),
+            **({"checkpoint": Path(skw["checkpoint"]).name}
+               if strategy_name in LEARNED_DEFAULT_CKPT and
+               skw.get("checkpoint") else {}),
+        }),
         "execution_type": "live",
         "evidence_type": evidence_for([strategy_name]),
         "badges": ["LIVE", "SYNTHETIC"],
@@ -307,8 +342,9 @@ class Handler(BaseHTTPRequestHandler):
                     skw = _resolve_kw(name, dict(gkw.get(name, {})))
                     skw.setdefault("tol", 0.5)
                     r = R.run_episode(task, name, skw)
-                    rows[name] = {
+                    row = {
                         "display": S.STRATEGY_DISPLAY.get(name, name),
+                        "model_version": _model_version(name),
                         "prediction": _fmt(fam, r["pred"]),
                         "correct": bool(r["correct"]),
                         "persistent_delta": r["telemetry"][
@@ -316,6 +352,10 @@ class Handler(BaseHTTPRequestHandler):
                         "state_delta": r["telemetry"]["state_delta"],
                         "latency_ms": r["telemetry"]["latency_ms"],
                     }
+                    if name in LEARNED_DEFAULT_CKPT:
+                        row["checkpoint"] = Path(str(skw.get(
+                            "checkpoint", ""))).name
+                    rows[name] = row
                 return self._json({
                     "task": {
                         "family": fam,
@@ -326,6 +366,7 @@ class Handler(BaseHTTPRequestHandler):
                         "query": _fmt(fam, task.query),
                         "ground_truth": _fmt(fam, task.ground_truth),
                         "rule_hidden": _rule_text(fam, task.hidden_rule),
+                        "holdout": _holdout(fam),
                     },
                     "rows": rows,
                     "provenance": _prov(task),
@@ -379,6 +420,7 @@ class Handler(BaseHTTPRequestHandler):
                           "correct": ok(pB, tB.ground_truth)},
                     "strategy_display": S.STRATEGY_DISPLAY.get(name, name),
                     "mode": "continual (no reset A->B, explicit)",
+                    "holdout": _holdout(fam),
                     "provenance": _prov(tA, {"strategy": name,
                                              "mode": "continual A->B->A"}),
                     "execution_type": "live",
@@ -456,7 +498,8 @@ class Handler(BaseHTTPRequestHandler):
                                "restored": rest}
                 return self._json({
                     "task": {"query": _fmt(fam, tA.query),
-                             "ground_truth": _fmt(fam, tA.ground_truth)},
+                             "ground_truth": _fmt(fam, tA.ground_truth),
+                             "holdout": _holdout(fam)},
                     "rows": rows,
                     "strategy_display": S.STRATEGY_DISPLAY.get(name, name),
                     "note": "Causal weight rests on swap (matched "

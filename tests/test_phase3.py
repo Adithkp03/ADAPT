@@ -176,3 +176,39 @@ def test_result_schema_shape():
     for key in ["persistent_delta", "state_delta", "latency_ms"]:
         assert key in tel, key
     assert re.match(r"^[0-9a-f]{6,}$", R._config_hash({"a": 1}))
+
+
+def test_compare_model_column_and_holdout_rendered():
+    assert "<th scope=\"col\">Model</th>" in WEB_JS
+    assert "model_version" in WEB_JS
+    assert WEB_JS.count("r.task.holdout") >= 2  # flagship + lab
+    assert "Single-episode result" in WEB_JS
+
+
+def test_controlled_vs_learned_equation_distinguished():
+    assert "CONTROLLED Adaptive State" in WEB_HTML
+    assert "tanh" in WEB_HTML
+    assert "not the learned variant" in WEB_HTML
+
+
+def test_no_hardcoded_developer_paths():
+    import subprocess as sp
+    pat = "C:" + "/Users"  # built dynamically so this test can't match itself
+    out = sp.run(["git", "grep", "-n", pat,
+                  "--", "tests", "server.py", "src", "web", "scripts"],
+                 capture_output=True, text=True, cwd=str(ROOT)).stdout
+    hits = [l for l in out.splitlines() if "test_no_hardcoded" not in l]
+    assert hits == [], hits
+
+
+def test_pilot_session_analyzes():
+    import subprocess as sp
+    fix = ROOT / "tests" / "fixtures" / "pilot_session.json"
+    assert fix.exists()
+    p = sp.run([sys.executable, str(ROOT / "scripts" / "analyze_sessions.py"),
+                str(fix)], capture_output=True, text=True)
+    assert p.returncode == 0, p.stderr
+    assert "N sessions: 1" in p.stdout
+    assert "gain=2" in p.stdout
+    assert "LO4: pre=1.0" in p.stdout  # post Q4 credits LO4 too
+    assert "LO7" in p.stdout

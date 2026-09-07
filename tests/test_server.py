@@ -159,3 +159,29 @@ def test_provenance_on_all_live_endpoints(srv):
                     "values": [1, 4], "episodes": 5, "seed_base": 0})
     assert sw["provenance"]["result_schema_version"] == 1
     assert sw["provenance"]["config_hash"]
+
+
+def test_per_strategy_provenance_and_holdout(srv):
+    ep = _post_raw(srv, "/api/episode",
+                   {"family": "linear", "strategy": "state",
+                    "strategy_kwargs": {}, "seed": 7})
+    assert ep["provenance"]["model_version"] == "adapt-v2"
+    assert "checkpoint" not in ep["provenance"]
+    assert "seed-disjoint" in ep["task"]["holdout"]
+    ep2 = _post_raw(srv, "/api/episode",
+                    {"family": "linear", "strategy": "learned_state",
+                     "strategy_kwargs": {}, "seed": 7})
+    assert ep2["provenance"]["model_version"] == "learned-v1"
+    assert ep2["provenance"]["checkpoint"] == "learned_rec_s0.npz"
+    ep3 = _post_raw(srv, "/api/episode",
+                    {"family": "symbolic", "strategy": "state",
+                     "strategy_kwargs": {}, "seed": 7, "n_demos": 4})
+    assert "disjoint offset pool" in ep3["task"]["holdout"]
+    cmp = _post_raw(srv, "/api/compare",
+                    {"family": "linear",
+                     "strategies": ["state", "learned_state"],
+                     "strategy_kwargs": {}, "seed": 21, "n_demos": 4})
+    assert cmp["rows"]["state"]["model_version"] == "adapt-v2"
+    assert cmp["rows"]["learned_state"]["model_version"] == "learned-v1"
+    assert cmp["rows"]["learned_state"]["checkpoint"] == \
+        "learned_rec_s0.npz"

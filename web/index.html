@@ -52,7 +52,8 @@
 <section id="stage-flagship" class="card" aria-labelledby="h-flag">
   <h2 id="h-flag">Experiment 001 — Teach the model a new rule</h2>
   <p><span class="badge live">LIVE</span> <span class="badge syn">SYNTHETIC</span>
-  This task rule was generated now and was never shown during any training. The model sees only the examples — never the rule.</p>
+  This rule was drawn moments ago from the held-out test pool (split=test — the controlled model below holds no trained
+  task weights, so there is nothing to "recall"). It sees only the examples — never the rule.</p>
   <div class="grid2">
     <div>
       <h3>Demonstrations</h3>
@@ -66,9 +67,14 @@
     <div aria-live="polite" id="flag-out"><p class="dim">Make your prediction, then run.</p></div>
   </div>
   <details class="mech"><summary>Explain what just happened (mechanism)</summary>
-    <pre>DEMONSTRATIONS → state update s_t = s + phi(x,y) → QUERY → prediction
-  persistent parameters θ: fixed (Δθ = 0)
-  adaptive state s: changed (Δs ≠ 0)</pre>
+    <pre>CONTROLLED Adaptive State (this stage — not the learned variant):
+DEMONSTRATIONS → state update s = s + phi(x,y) per example → QUERY → prediction
+  persistent parameters θ: none trained, fixed (Δθ = 0)
+  adaptive state s: changed (Δs ≠ 0)
+The learned recurrent variant in the Research Lab uses
+s_t = tanh(W_s·s + W_e·[phi(x);y] + b_s) with frozen meta-learned
+weights — same lesson (memory evolves, parameters static),
+different dynamics.</pre>
   </details>
   <div id="flag-quiz"></div>
 </section>

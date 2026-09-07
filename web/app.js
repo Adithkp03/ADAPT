@@ -55,13 +55,13 @@ function quizHTML(el, items, tag) {
     ${it.o.map((o, j) => `<label><input type="radio" name="${tag}${i}" value="${j}"> ${esc(o)}</label><br>`).join("")}</div>`).join("");
 }
 function quizScore(el, items, tag) {
-  let s = 0; items.forEach((it, i) => { const c = document.querySelector(`input[name="${tag}${i}"]:checked`); if (c && +c.value === it.a) s++; });
-  return s;
+  const detail = items.map((it, i) => { const c = document.querySelector(`input[name="${tag}${i}"]:checked`); return c && +c.value === it.a ? 1 : 0; });
+  return { s: detail.reduce((a, b) => a + b, 0), detail };
 }
 quizHTML("pretest", PRE, "pre");
 quizHTML("posttest", POST, "post");
-$("pretest-score").onclick = () => { const s = quizScore(0, PRE, "pre"); $("pretest-out").textContent = `Pre-test: ${s}/${PRE.length}. The lab below targets exactly these ideas.`; log("pretest", { s }); };
-$("posttest-score").onclick = () => { const s = quizScore(0, POST, "post"); $("posttest-out").textContent = `Post-test: ${s}/${POST.length}.`; log("posttest", { s }); renderBoard(); };
+$("pretest-score").onclick = () => { const r = quizScore(0, PRE, "pre"); $("pretest-out").textContent = `Pre-test: ${r.s}/${PRE.length}. The lab below targets exactly these ideas.`; log("pretest", { s: r.s, detail: r.detail }); };
+$("posttest-score").onclick = () => { const r = quizScore(0, POST, "post"); $("posttest-out").textContent = `Post-test: ${r.s}/${POST.length}.`; log("posttest", { s: r.s, detail: r.detail }); renderBoard(); };
 
 /* ---------- flagship ---------- */
 let flag = { seed: 7, data: null };
@@ -91,7 +91,8 @@ async function flagRun() {
       <tr><th scope="row">Ground truth</th><td>${esc(r.ground_truth)}</td><td>truth</td></tr></table>
       <div class="delta" role="status">WHAT CHANGED? Parameters Δθ = <strong>${r.telemetry.persistent_delta.toFixed(4)}</strong> ·
       State Δs = <strong>${r.telemetry.state_delta.toFixed(2)}</strong></div>
-      <p>The rule was acquired and the weights never moved. <strong>Where did the new rule go?</strong></p>
+      <p class="dim">Holdout: ${esc(r.task.holdout || "split=test")}. Single-episode result — population claim lives in the sweeps below.</p>
+      <p>The behavior was acquired while persistent parameters stayed fixed (Δθ = 0, Δs ≠ 0). <strong>Where did the new rule go?</strong></p>
       ${provHTML(r.provenance, { split: "test" })}`;
     mechQuiz();
   } catch (e) { $("flag-out").innerHTML = `<p class="no">Error: ${esc(e.message)} (is the server running?)</p>`; }
@@ -158,8 +159,8 @@ async function cmpRun() {
     $("cmp-out").innerHTML = `${badges(r.badges)}
       <p>Query ${esc(r.task.query)} · truth ${esc(r.task.ground_truth)}</p>
       <table><caption>Same task, same demonstrations — paired</caption>
-      <tr><th scope="col">Mechanism</th><th scope="col">Prediction</th><th scope="col">Correct</th><th scope="col">Δθ</th><th scope="col">Δs</th></tr>
-      ${Object.entries(r.rows).map(([k, v]) => `<tr><th scope="row">${esc(v.display)}</th><td>${esc(v.prediction)}</td>
+      <tr><th scope="col">Mechanism</th><th scope="col">Model</th><th scope="col">Prediction</th><th scope="col">Correct</th><th scope="col">Δθ</th><th scope="col">Δs</th></tr>
+      ${Object.entries(r.rows).map(([k, v]) => `<tr><th scope="row">${esc(v.display)}</th><td class="dim">${esc(v.model_version || "?")}${v.checkpoint ? "<br>" + esc(v.checkpoint) : ""}</td><td>${esc(v.prediction)}</td>
         <td class="${v.correct ? "ok" : "no"}">${v.correct ? "✓" : "✗"}</td><td>${v.persistent_delta.toFixed(3)}</td><td>${v.state_delta.toFixed(2)}</td></tr>`).join("")}</table>
       <p>Read the Δθ/Δs columns: three different places the rule can live.</p>${provHTML(r.provenance, { split: "test" })}`;
     log("compare", { seed: cmpSeed });
@@ -307,6 +308,7 @@ $("lab-run").onclick = async () => {
       <table><caption>Demonstrations</caption><tr><th scope="col">#</th><th scope="col">x</th><th scope="col">y</th></tr>${demoRows(r.task.demonstrations)}</table>
       <p>Query <strong>${esc(r.task.query)}</strong> → model <strong>${esc(r.prediction)}</strong> · truth <strong>${esc(r.ground_truth)}</strong>
       <span class="${r.correct ? "ok" : "no"}">${r.correct ? "✓ Correct" : "✗ Wrong"}</span></p>
+      <p class="dim">Holdout: ${esc(r.task.holdout || "split=test")}</p>
       <div class="delta">Δθ = <strong>${r.telemetry.persistent_delta.toFixed(4)}</strong> · Δs = <strong>${r.telemetry.state_delta.toFixed(2)}</strong> ·
       adapt ${r.telemetry.t_adapt_ms.toFixed(2)}ms · predict ${r.telemetry.t_predict_ms.toFixed(2)}ms · steps ${r.telemetry.steps}</div>
       ${provHTML(r.provenance, { split: "test" })}`;

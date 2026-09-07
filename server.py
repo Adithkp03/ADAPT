@@ -585,10 +585,11 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     import argparse
+    import os
     ap = argparse.ArgumentParser()
-    ap.add_argument("--port", type=int, default=8001)
+    ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", 8001)))
     args = ap.parse_args()
-    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    srv = ThreadingHTTPServer(("0.0.0.0", args.port), Handler)
     print(f"AdaptLab on http://127.0.0.1:{args.port}  (Ctrl-C to stop)",
           flush=True)
     srv.serve_forever()

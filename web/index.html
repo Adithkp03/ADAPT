@@ -161,6 +161,17 @@ different dynamics.</pre>
     <label for="eta">Learning rate η: <output id="eta-v" for="eta">0.10</output>
       <input type="range" id="eta" min="0" max="1" step="0.05" value="0.1"></label>
     <p>‖Δσ‖ = <strong id="eta-out">?</strong> <span class="dim">(‖x‖=‖y‖=1 demo vectors)</span></p>
+    <p>BEFORE interaction: σ<sub>12</sub> = 0.14 → AFTER: σ<sub>12</sub> = <strong id="sig-out">?</strong>
+    <span class="dim">(demo scalars: 0.14 + η; a local interaction changed the synaptic state — magnitude only, no semantics)</span></p>
+  </div>
+  <div class="hebb" aria-label="BDH local cycle stepper">
+    <p><strong>The BDH local cycle, step by step</strong>
+    <span class="badge ill">ILLUSTRATIVE</span>
+    <span class="dim">Educational rendering of the published 4-round structure (Equations of Reasoning §4) — not a simulation of BDH.</span></p>
+    <div id="eor-step" aria-live="polite"></div>
+    <p class="row"><button id="eor-prev" type="button" class="ghost">← Prev round</button>
+    <button id="eor-next" type="button">Next round →</button>
+    <span id="eor-pos" class="dim" aria-live="polite"></span></p>
   </div>
   <h3>BDH-CQ — memory + latent reasoning, no verbal chain-of-thought</h3>
   <p>Per the BDH-CQ paper (arXiv 2026): demonstrations update <strong>recurrent memory</strong>, then the query is solved by
@@ -220,6 +231,7 @@ different dynamics.</pre>
   <h3>Vetted research results <span class="badge pre">PRECOMPUTED</span></h3>
   <p class="row"><select id="pre-sel" aria-label="Precomputed experiment">
     <option value="008_intervention_linear">E8 intervention (linear)</option>
+    <option value="001_task_acquisition_arc">E1 ARC-like grid acquisition (frontier mode)</option>
     <option value="005_interference_linear">E5 interference (linear)</option>
     <option value="004_state_capacity_linear">E4 capacity proxy (linear)</option>
     <option value="003_compute_scaling_linear">E3 compute scaling</option>

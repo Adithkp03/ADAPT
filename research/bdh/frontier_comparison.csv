@@ -1,0 +1,9 @@
+mechanism,display,accuracy,ci95_lo,ci95_hi,latency_ms,mean_persistent_delta,mean_state_delta,acc_A_initial,retention_A,n_acc,n_ret,adaptation_gain
+frozen,Frozen baseline — no adaptation,0.02,0.004,0.105,0.001,0.0,0.0,0.05,1.0,50,20,0.0
+context,Context-conditioned baseline,1.0,0.929,1.0,0.039,0.0,0.0,1.0,0.15,50,20,0.98
+param_tta,Parameter TTA — toy parameterized model,0.32,0.208,0.458,0.133,2.1426,0.0,0.1,0.0,50,20,0.3
+state,Adaptive State — controlled model,1.0,0.929,1.0,0.012,0.0,69.13,1.0,0.1,50,20,0.98
+ttt_state,TTT State — learned state parameterization,0.32,0.208,0.458,0.103,0.0,2.143,0.1,0.0,50,20,0.3
+learned_state,Adaptive State — learned recurrent model,0.1,0.043,0.214,0.067,0.0,2.38,0.1,0.0,50,20,0.08
+learned_tta,Parameter TTA — learned backbone model,0.24,0.143,0.374,0.385,2.4027,0.0,0.35,0.143,50,20,0.22
+learned_ttt,TTT State — learned backbone model,0.42,0.294,0.558,0.117,0.0,3.481,0.6,0.0,50,20,0.4

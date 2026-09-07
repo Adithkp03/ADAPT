@@ -36,6 +36,7 @@ from adapt.learned import MODEL_VERSION as LEARNED_MODEL_VERSION
 RESULTS = ROOT / "research" / "experiments"
 FIGURES = RESULTS / "figures"
 EXP_IDS = ["001_task_acquisition_linear", "001_task_acquisition_symbolic",
+           "001_task_acquisition_arc",
            "002_demo_scaling_linear", "003_compute_scaling_linear",
            "004_state_capacity_linear", "005_interference_linear",
            "006_noise_linear", "008_intervention_linear",

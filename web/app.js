@@ -358,3 +358,25 @@ $("export").onclick = () => {
 renderBoard();
 flagLoad(7);
 log("session_start", {});
+
+/* ---------- Sidebar Active State Navigation ---------- */
+document.querySelectorAll('.stages a').forEach(link => {
+  link.addEventListener('click', function() {
+    document.querySelectorAll('.stages li').forEach(li => li.classList.remove('active'));
+    this.parentElement.classList.add('active');
+  });
+});
+
+const sections = document.querySelectorAll('main > section');
+if (sections.length > 0) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.stages li').forEach(li => li.classList.remove('active'));
+        const activeLink = document.querySelector(`.stages a[href="#${entry.target.id}"]`);
+        if (activeLink) activeLink.parentElement.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -50% 0px' });
+  sections.forEach(sec => observer.observe(sec));
+}

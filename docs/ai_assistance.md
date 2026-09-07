@@ -6,11 +6,15 @@ understood and defensible by the team).
 
 ## Models / tools used
 
-- Large language models (coding assistants) for code generation,
-  documentation drafting, and analysis support across Phases 1–5.
-  Exact models/tools are recorded in the session transcript archive;
-  the canonical working set is the OpenAI-compatible coding agent used
-  interactively during development.
+- Interactive coding agent (an OpenAI-compatible CLI agent) used for
+  code generation, documentation drafting, and analysis support across
+  Phases 1–5. This is the record we can actually stand behind: the agent
+  ran locally, every output it produced landed as a git-tracked file,
+  and the full change history of what it wrote is the repository itself
+  (git log + `provenance/code.csv`). We do not keep a separate
+  transcription archive, so we make no claim about one; the granularity
+  of model identifiers in specific turn logs is retained by the tool's
+  local history rather than committed here.
 
 ## Purpose per artifact class
 
@@ -24,7 +28,7 @@ understood and defensible by the team).
 ## Generated code
 
 Substantial code was drafted with AI assistance, then human-reviewed,
-run, and tested (72+ green tests). The team understands and can defend
+run, and tested (93 green tests). The team understands and can defend
 every exported function; no "black box" third-party-generated blob is
 shipped. Generated code is subject to the same provenance rules
 (git history, `provenance/code.csv`) as hand-written code.

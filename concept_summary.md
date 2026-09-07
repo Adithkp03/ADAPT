@@ -75,8 +75,11 @@ frozen baseline 0.11 → state-adapted 1.00 accuracy on unseen linear
 rules (200 paired tasks, Δθ = 0, Δs > 0); state also=1.00 on symbolic
 (0.00 frozen). One demonstration suffices only when it identifies the
 rule; continuous rules need ≥ 2. Perturb/restore interventions confirm
-the state carries the task information. Learned recurrent and learned
-state checkpoints reproduce the same pattern. Limit: toy systems; the
+the state carries the task information. The learned-recurrent
+checkpoint did **not** acquire the linear rule under our meta-training
+budget (accuracy 0.09 ≈ 0.11 frozen baseline; learned TTA 0.26 /
+learned TTT 0.45 stay far below state-adaptation 1.00) — an honest
+negative, not a reproduction. Limit: toy systems; the
 classic ARC-like proxy pool is small; BDH-CQ's 150M/29.5% claim was not
 reproduced by us and stays scoped as PUBLISHED.
 
@@ -93,7 +96,8 @@ claim is made past toy scale.
 The interactive laboratory lets you watch the state change per
 demonstration, break it with interventions, induce interference, and
 compare with context and parameter adaptation on identical episodes —
-no retraining, full provenance, every number live.
+no retraining, full provenance, every number live or explicitly
+labelled precomputed/published.
 
 ---
 

@@ -129,7 +129,9 @@ def test_computational_no_fake_logic_in_frontend():
 
 
 def test_ux_mobile_a11y_hooks():
-    assert "700px" in WEB_CSS  # single-column collapse
+    assert "max-width: 100%" in WEB_CSS  # canvas/scale-down
+    assert re.search(r"@media\s*\(max-width:\s*80?0px\)", WEB_CSS) or \
+        "max-width:800px" in WEB_CSS or "max-width: 800px" in WEB_CSS
     assert "prefers-reduced-motion" in WEB_CSS
     assert "aria-live" in WEB_HTML and "aria-label" in WEB_HTML
     assert 'class="skip"' in WEB_HTML

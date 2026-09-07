@@ -1,0 +1,5 @@
+session_id,nd_predict_events,nd_predict_first,nd_correct,ret_predict_events,ret_predict_first,ret_correct
+anon-1gtigru,1,improve,1,3,improve,0
+anon-3f2st3z,1,degrade,0,2,improve,0
+anon-ry3bx6i,1,same,0,0,,0
+anon-y7gfr18,1,improve,1,3,improve,0

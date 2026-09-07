@@ -139,7 +139,7 @@ h3 { font-size: 1.1rem; color: var(--acc); font-weight: 500; }
   position: relative;
 }
 
-/* Vertical line for timeline */
+/* Central vertical line */
 .stages ol::before {
   content: '';
   position: absolute;
@@ -147,7 +147,7 @@ h3 { font-size: 1.1rem; color: var(--acc); font-weight: 500; }
   top: 10px;
   bottom: 20px;
   width: 2px;
-  background: var(--line);
+  background: rgba(255, 255, 255, 0.1);
   z-index: 0;
 }
 
@@ -158,44 +158,105 @@ h3 { font-size: 1.1rem; color: var(--acc); font-weight: 500; }
   align-items: center;
 }
 
-.stages a {
+.stages .node {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  margin-left: 8px;
+  z-index: 2;
+  position: relative;
   color: var(--dim);
-  text-decoration: none;
-  padding: 16px 16px 16px 48px;
-  border-radius: 12px;
-  display: block;
-  width: 100%;
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  font-weight: 500;
 }
 
-/* Circle marker */
-.stages a::before {
+
+.stages li.active .node {
+  background: var(--acc);
+  color: var(--bg);
+  border-color: var(--acc);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Horizontal connector line */
+.stages li::before {
   content: '';
   position: absolute;
-  left: 14px;
+  left: 32px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--stage-circle);
-  border: 2px solid var(--stage-circle-border);
-  transition: all 0.2s;
+  width: 16px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 0;
 }
 
-.stages a:hover { 
-  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 100%);
-  color: var(--acc); 
-  border: 1px solid rgba(255,255,255,0.2); 
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  transform: translateY(-2px);
+.stages li.active::before {
+  background: var(--acc);
 }
-.stages a:hover::before { border-color: var(--acc); background: var(--acc); }
+
+/* Glass card styling for the link */
+.stages a {
+  flex: 1;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.stages a:hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 100%);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+/* Larger, brighter card for active state */
+.stages li.active a {
+  padding: 24px 16px;
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 0 20px rgba(255,255,255,0.1), 0 8px 16px rgba(0,0,0,0.4);
+}
+
+
+
+.stages .text {
+  display: flex;
+  flex-direction: column;
+}
+
+.stages .kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.stages .title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--acc);
+}
+
+
+
+.stages .arrow {
+  float: right;
+  color: var(--dim);
+}
 
 main { max-width: 960px; margin: 0 auto; }
 

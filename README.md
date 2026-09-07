@@ -5,7 +5,7 @@ laboratory on inference-time adaptation, with exact ground truth,
 full provenance, and a rigorous, honestly-labelled connection to the
 BDH / BDH-CQ frontier.
 
-Reference implementation commit: `6f8d42d`.
+Reference implementation commit: `66cebd7`.
 
 ## What this is
 
@@ -18,11 +18,12 @@ weight updates, Δθ > 0) — on identical episodes, with exact hidden
 ground truth for every task.
 
 The artifact is a 9-stage guided learning journey ending in an
-interactive laboratory. Every learner-facing number is produced by the
-real engine (`src/adapt/`) over HTTP — nothing is faked or animated to
-repay a claim; badges are LIVE / PRECOMPUTED / SYNTHETIC / PUBLISHED /
-ILLUSTRATIVE and mean exactly what the evidence taxonomy says they mean
-(`docs/bdh_integrity_audit.md`, D5.2 audit).
+interactive laboratory. Every learner-facing number is either produced
+live by the real engine (`src/adapt/`) over HTTP or an explicitly
+labelled precomputed/published research result — nothing is faked or
+animated to repay a claim; badges are LIVE / PRECOMPUTED / SYNTHETIC /
+PUBLISHED / ILLUSTRATIVE and mean exactly what the evidence taxonomy
+says they mean (`docs/bdh_integrity_audit.md`, D5.2 audit).
 
 ## Central claim
 
@@ -221,7 +222,7 @@ python -m venv .venv            # Python 3.11+
 .venv\Scripts\activate          # Windows (unix: source .venv/bin/activate)
 pip install -r requirements.txt
 python server.py --port 8001    # open http://127.0.0.1:8001
-pytest tests/ -q                # 72+ tests
+pytest tests/ -q                # 93 tests
 ```
 
 ## Deployment

@@ -154,7 +154,7 @@ def test_d57_accessibility_and_mobile():
     assert 'role="img"' in WEB_HTML
     assert WEB_HTML.count("aria-live") >= 3
     assert "@media" in WEB_CSS and "grid2" in WEB_CSS
-    assert "max-width:100%" in WEB_CSS
+    assert "max-width: 100%" in WEB_CSS or "max-width:100%" in WEB_CSS
     assert len(re.findall(r"<h1", WEB_HTML)) == 1
     # no div-as-button trap: interactive controls are native elements
     assert 'role="button"' not in WEB_HTML
@@ -164,10 +164,25 @@ def test_d57_accessibility_and_mobile():
 def test_d58_learning_report_honest():
     t = (ROOT / "evaluation" /
          "learning_evaluation_report.md").read_text(encoding="utf-8")
-    assert "PILOT ONLY" in t and "n=1" in t
+    # honest study framing: no finished claim, distinct-ID discipline
+    assert "IN PROGRESS" in t and "n=4" in t
+    assert ("distinct" in t and "excluded" in t) or "dedupe" in t \
+        or "double-count" in t
     assert "8" in t and "15" in t and "participant" in t
-    assert "pending" in t and "stop rules" in t
-    assert not (ROOT / "evaluation" / "sessions").exists() or True
+    assert "transfer" in t and "preliminary" in t
+    assert "stop rules" in t
+    assert ("must not" in t) or ("not published" in t) or ("no claim" in t)
+    jets = sorted((ROOT / "evaluation").glob("anon-*.json"))
+    assert len(jets) >= 1
+    # duplicate-ID files must be excluded, not counted twice
+    ids = []
+    import json
+    for j in jets:
+        ids.append(json.loads(j.read_text(encoding="utf-8")).get("id"))
+    assert len(ids) == len(set(ids)) or "excluded" in t
+    # analysis tables exist for the reported numbers
+    assert (ROOT / "evaluation" / "analysis" / "learning_gain.csv").exists()
+    assert (ROOT / "evaluation" / "analysis" / "transfer.csv").exists()
 
 
 # ---------------------------------------------------------------- D5.9

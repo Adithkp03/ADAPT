@@ -28,8 +28,9 @@ def test_d31_learning_spec_present():
 def test_d32_interaction_model_covers_controls():
     t = (ROOT / "research" / "education" / "interaction_model.md").read_text()
     for key in ["N_D", "/api/episode", "/api/sweep", "/api/interference",
-                "/api/intervene", "precomputed", "Hard rules"]:
+                "/api/intervene", "precomputed", "learned_tta"]:
         assert key in t, key
+    assert "without a row" in t  # no cosmetic controls rule
 
 
 def test_d33_design_trilogy():
@@ -63,6 +64,11 @@ def test_d36_lab_full_controls():
                 "lab-run", "pre-sel", "pre-run"]:
         assert cid in WEB_HTML, cid
     assert "/api/episode" in WEB_JS
+    # D3.6: Phase 2B learned trio exposed as a separated Research-Lab group
+    for opt in ["learned_state", "learned_tta", "learned_ttt"]:
+        assert opt in WEB_HTML, opt
+    assert "Research Lab" in WEB_HTML
+    assert "linear only" in WEB_HTML or "linear only" in WEB_JS
 
 
 def test_d37_stress_lab_predictive():
@@ -91,6 +97,10 @@ def test_d310_badges_and_provenance():
         assert b in WEB_HTML, b
     assert "provenance" in WEB_JS.lower() and "config_hash" in WEB_JS
     assert "PRECOMPUTED" in SERVER  # server re-stamps precomputed
+    # every live surface renders a drawer: episode, sweep table,
+    # interference (WHY + provenance), intervention
+    assert WEB_JS.count("provHTML(r.provenance") >= 4
+    assert "WHY?" in WEB_JS  # D3.7 causal chain on interference
 
 
 def test_d311_evaluation_plan_and_instrumentation():

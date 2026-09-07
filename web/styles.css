@@ -48,3 +48,8 @@ footer{max-width:960px;margin:0 auto;padding:0 12px 40px;color:var(--dim);font-s
 .q{margin:12px 0;padding:10px;border:1px solid var(--line);border-radius:6px}
 .q p{margin:0 0 6px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.card{overflow-x:auto}
+table{display:block;overflow-x:auto;white-space:nowrap}
+table caption{white-space:normal}
+@media(max-width:430px){h1{font-size:1.5rem}.card{padding:12px}button{width:100%}}

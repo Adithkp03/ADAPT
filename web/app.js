@@ -16,8 +16,9 @@ async function get(p) { const r = await fetch(p); const j = await r.json(); if (
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function badges(b) { const m = { LIVE: "live", PRECOMPUTED: "pre", SYNTHETIC: "syn", "PUBLISHED RESULT": "pub", ILLUSTRATIVE: "ill" }; return (b || []).map(x => `<span class="badge ${m[x] || "ill"}">${esc(x)}</span>`).join(" "); }
 function provHTML(p, extra) {
+  const seed = (p.seed !== undefined) ? p.seed : (p.seed_base !== undefined ? p.seed_base + "+N (sweep)" : "—");
   return `<details><summary>Experiment details (provenance)</summary><table>
-  <tr><th scope="row">Seed</th><td>${p.seed}</td></tr>
+  <tr><th scope="row">Seed</th><td>${esc(String(seed))}</td></tr>
   <tr><th scope="row">Task generator</th><td>${esc(p.task_generator_version)}${extra && extra.split ? " · split " + extra.split : ""}</td></tr>
   <tr><th scope="row">Model version</th><td>${esc(p.model_version || "—")}</td></tr>
   <tr><th scope="row">Config hash</th><td>${esc(p.config_hash || "—")}</td></tr>
@@ -28,6 +29,9 @@ function stratKW(name, fam) {
   if (name === "param_tta") return { steps: 8, lr: (fam === "symbolic" || fam === "compositional") ? 0.5 : 0.05 };
   if (name === "ttt_state") return { steps: 8, lr: 0.05 };
   if (name === "state") return { state_dim: null, seed: 0 };
+  if (name === "learned_state") return {};
+  if (name === "learned_tta") return { steps: 5 };
+  if (name === "learned_ttt") return {};
   return {};
 }
 function demoRows(d) { return d.map((p, i) => `<tr><th scope="row">${i + 1}</th><td>${esc(p.x)}</td><td>${esc(p.y)}</td></tr>`).join(""); }
@@ -130,7 +134,8 @@ $("nd-run").onclick = async () => {
 function sweepTable(r) {
   return `${badges(r.badges)}<table><caption>${esc(r.strategy_display)} — live sweep</caption>
   <tr><th scope="col">${esc(r.var)}</th>${r.points.map(p => `<th scope="col">${esc(String(p.value))}</th>`).join("")}</tr>
-  <tr><th scope="row">accuracy</th>${r.points.map(p => `<td>${p.accuracy.toFixed(2)}<br><span class="dim">[${p.ci95[0].toFixed(2)}, ${p.ci95[1].toFixed(2)}]</span></td>`).join("")}</tr></table>`;
+  <tr><th scope="row">accuracy</th>${r.points.map(p => `<td>${p.accuracy.toFixed(2)}<br><span class="dim">[${p.ci95[0].toFixed(2)}, ${p.ci95[1].toFixed(2)}]</span></td>`).join("")}</tr></table>
+  ${r.provenance ? provHTML(r.provenance, { split: "test" }) : ""}`;
 }
 function drawSweep(cv, pts, xlab, ylab) {
   const c = cv.getContext("2d"), W = cv.width, H = cv.height;
@@ -209,8 +214,11 @@ async function intRun() {
       <tr><th scope="row">Task A, before B</th><td>${esc(r.A.pred_before)}</td><td>${esc(r.A.ground_truth)}</td><td class="${r.A.correct_before ? "ok" : "no"}">${r.A.correct_before ? "✓" : "✗"}</td></tr>
       <tr><th scope="row">Task B</th><td>${esc(r.B.pred)}</td><td>${esc(r.B.ground_truth)}</td><td class="${r.B.correct ? "ok" : "no"}">${r.B.correct ? "✓" : "✗"}</td></tr>
       <tr><th scope="row">Task A, after B</th><td>${esc(r.A.pred_after)}</td><td>${esc(r.A.ground_truth)}</td><td class="${r.A.correct_after ? "ok" : "no"}">${r.A.correct_after ? "✓" : "✗"}</td></tr></table>
-      <p>Retention change: <strong class="${drop > 0 ? "no" : "ok"}">${drop > 0 ? "−" + drop + " (forgot)" : "0 (retained)"}</strong> on this episode.
-      Accumulated statistics mix two lines into a bad fit — the state remembers everything, including what it should forget.</p>`;
+      <p>Retention change: <strong class="${drop > 0 ? "no" : "ok"}">${drop > 0 ? "−" + drop + " (forgot)" : "0 (retained)"}</strong> on this episode.</p>
+      <p><strong>WHY?</strong> The adaptive state was overwritten by Task B's demonstrations — there is no separate slot holding Task A.
+      Accumulated statistics mix two lines into a bad fit: the state remembers everything, including what it should forget.
+      This is interference, not a bug — shared transient memory means new writes compete with old ones.</p>
+      ${provHTML(r.provenance, { split: "test" })}`;
     log("interference", { seed: intSeed, drop });
   } catch (e) { $("int-out").innerHTML = `<p class="no">Error: ${esc(e.message)}</p>`; }
   btn.disabled = false;
@@ -227,7 +235,8 @@ $("e8-run").onclick = async () => {
       <tr><th scope="col">Perturbation</th><th scope="col">Base</th><th scope="col">Perturbed</th><th scope="col">Restored</th></tr>
       ${Object.entries(r.rows).map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${sym(v.base)}</td>
         <td class="${v.perturbed ? "ok" : "no"}">${sym(v.perturbed)}</td><td>${sym(v.restored)}</td></tr>`).join("")}</table>
-      <p>${esc(r.note)}</p>`;
+      <p>${esc(r.note)}</p>
+      ${provHTML(r.provenance, { split: "test" })}`;
     log("intervene", { seed: intSeed });
   } catch (e) { $("e8-out").innerHTML = `<p class="no">Error: ${esc(e.message)}</p>`; }
   btn.disabled = false;
@@ -284,11 +293,17 @@ $("ch-run").onclick = async () => {
 $("lab-run").onclick = async () => {
   const btn = $("lab-run"); btn.disabled = true;
   try {
-    const fam = $("lab-fam").value, strat = $("lab-strat").value;
+    let fam = $("lab-fam").value;
+    const strat = $("lab-strat").value;
+    let note = "";
+    if (strat.startsWith("learned_") && fam !== "linear") {
+      fam = "linear"; $("lab-fam").value = "linear";
+      note = `<p class="dim">Learned trio scope: linear only — family switched to linear.</p>`;
+    }
     const r = await post("/api/episode", { family: fam, strategy: strat,
       strategy_kwargs: stratKW(strat, fam), seed: +$("lab-seed").value,
       n_demos: +$("lab-nd").value, noise: +$("lab-noise").value });
-    $("lab-out").innerHTML = `${badges(r.badges)} <span class="dim">${esc(r.strategy_display)} · ${esc(r.task.family_display)}</span>
+    $("lab-out").innerHTML = `${note}${badges(r.badges)} <span class="dim">${esc(r.strategy_display)} · ${esc(r.task.family_display)}</span>
       <table><caption>Demonstrations</caption><tr><th scope="col">#</th><th scope="col">x</th><th scope="col">y</th></tr>${demoRows(r.task.demonstrations)}</table>
       <p>Query <strong>${esc(r.task.query)}</strong> → model <strong>${esc(r.prediction)}</strong> · truth <strong>${esc(r.ground_truth)}</strong>
       <span class="${r.correct ? "ok" : "no"}">${r.correct ? "✓ Correct" : "✗ Wrong"}</span></p>

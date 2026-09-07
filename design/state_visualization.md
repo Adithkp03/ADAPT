@@ -55,3 +55,29 @@ The learning claim needs exactly one contrast — `Δθ = 0` beside `Δs ≠ 0`
 limits (capacity cliff, interference drop). Each is a number the engine
 already emits; no invented interpretability is required to teach the
 mechanism honestly.
+
+## 5. Glossary — what each quantity means (and does not mean)
+
+- **Δθ (persistent delta):** norm of change to persistent parameters θ
+  across adaptation. For `state`/`context`/`learned_state` it is
+  identically 0 by construction (nothing optimizes θ). NOT a measure of
+  "how much was learned" — learning lives elsewhere here.
+- **Δs (state delta):** `‖s_after − s_before‖`, norm of change to the
+  disposable adaptive state. Nonzero means the demonstrations moved the
+  transient memory. NOT a semantic code — its magnitude, not its
+  direction, carries the lesson.
+- **State norm / similarity:** only shown where computed (E8 swap uses a
+  matched counterfactual state from another task; nullmean uses the
+  8-task mean state as an on-manifold null). We do NOT display
+  cosine-similarity dashboards or "Task A ↔ state = 0.82" style claims:
+  uncomputed numbers are not shown.
+- **Intervention result (base / perturbed / restored):** per-perturbation
+  correctness booleans. `restored = True` means returning the exact
+  adapted state recovers behavior (necessity check). `swap`-failure means
+  another task's state does not solve this task (specificity);
+  `nullmean`-failure means the average state does not solve it either.
+  `shuffle`/`noise`/`zero` failures are degradation sanity checks only —
+  never claimed as information removal.
+- **Retention drop (A→B→A):** single-episode correctness difference, not a
+  population statistic. The sweep/precomputed E5 gives the population
+  view; the live episode gives the visceral one. Both are labeled.

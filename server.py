@@ -41,6 +41,58 @@ EXP_IDS = ["001_task_acquisition_linear", "001_task_acquisition_symbolic",
            "009_learned_linear_s0", "009_learned_intervention",
            "009_mechanistic"]
 
+KNOWN_FAMILIES = set(S.FAMILY_DISPLAY)
+KNOWN_STRATEGIES = set(S.STRATEGY_DISPLAY)
+LEARNED_DEFAULT_CKPT = {
+    "learned_state": ROOT / "checkpoints" / "learned_rec_s0.npz",
+    "learned_tta": ROOT / "checkpoints" / "learned_ptt_s0.npz",
+    "learned_ttt": ROOT / "checkpoints" / "learned_ttt_s0.npz",
+}
+MAX_BODY = 1 << 20  # 1 MiB — sweeps are computed server-side, never uploaded
+
+
+def _err(msg, code=400):
+    return {"error": msg}, code
+
+
+def _validate_request(fam, name):
+    """Shared input bounds for every live endpoint. Returns (fam, name, err)."""
+    if fam not in KNOWN_FAMILIES:
+        return None, None, ({"error": f"unknown family: {fam}"}, 400)
+    if name not in KNOWN_STRATEGIES:
+        return None, None, ({"error": f"unknown strategy: {name}"}, 400)
+    if name in LEARNED_DEFAULT_CKPT and fam != "linear":
+        return None, None, ({"error": "learned trio scope: linear only"}, 400)
+    return fam, name, None
+
+
+def _resolve_kw(name, raw):
+    """Bound numerics; inject vetted default checkpoints for the learned trio."""
+    kw = dict(raw)
+    if name in LEARNED_DEFAULT_CKPT and not kw.get("checkpoint"):
+        kw["checkpoint"] = str(LEARNED_DEFAULT_CKPT[name])
+    if "steps" in kw:
+        kw["steps"] = max(0, min(64, int(kw["steps"])))
+    if "lr" in kw:
+        kw["lr"] = max(0.0, min(5.0, float(kw["lr"])))
+    if "state_dim" in kw and kw["state_dim"] not in (None, "full"):
+        kw["state_dim"] = max(1, min(64, int(kw["state_dim"])))
+    return kw
+
+
+def _bounded_int(v, lo, hi, default):
+    try:
+        return max(lo, min(hi, int(v)))
+    except (TypeError, ValueError):
+        return default
+
+
+def _bounded_float(v, lo, hi, default):
+    try:
+        return max(lo, min(hi, float(v)))
+    except (TypeError, ValueError):
+        return default
+
 
 def _fmt(family, v):
     if family in ("linear", "quadratic"):
@@ -134,6 +186,8 @@ def _flat_kw(body, name):
 
 def _body(handler):
     n = int(handler.headers.get("Content-Length", 0))
+    if n > MAX_BODY:
+        raise ValueError("body too large")
     return json.loads(handler.rfile.read(n) or b"{}")
 
 
@@ -213,27 +267,44 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if self.path == "/api/episode":
                 fam = body.get("family", "linear")
+                name = body.get("strategy", "state")
+                fam, name, err = _validate_request(fam, name)
+                if err:
+                    return self._json(*err)
                 task = T.generate_task(
-                    fam, int(body.get("seed", 7)),
-                    n_demos=int(body.get("n_demos", 4)),
-                    noise=float(body.get("noise", 0.0)),
+                    fam, _bounded_int(body.get("seed", 7), 0, 999999, 7),
+                    n_demos=_bounded_int(body.get("n_demos", 4), 1, 16, 4),
+                    noise=_bounded_float(body.get("noise", 0.0), 0.0, 1.0,
+                                         0.0),
                     split=body.get("split", "test"))
-                skw = _flat_kw(body, body.get("strategy", "state"))
+                skw = _resolve_kw(name, _flat_kw(body, name))
                 skw.setdefault("tol", 0.5)
-                return self._json(_episode_payload(
-                    task, body.get("strategy", "state"), skw))
+                return self._json(_episode_payload(task, name, skw))
             if self.path == "/api/compare":
                 fam = body.get("family", "linear")
+                if fam not in KNOWN_FAMILIES:
+                    return self._json({"error": f"unknown family: {fam}"},
+                                      400)
+                names = body.get("strategies",
+                                 ["context", "param_tta", "state"])
+                if (not isinstance(names, list) or not names or
+                        len(names) > len(KNOWN_STRATEGIES) or
+                        any(n not in KNOWN_STRATEGIES for n in names)):
+                    return self._json({"error": "bad strategies"}, 400)
+                if any(n in LEARNED_DEFAULT_CKPT for n in names) and \
+                        fam != "linear":
+                    return self._json(
+                        {"error": "learned trio scope: linear only"}, 400)
                 task = T.generate_task(
-                    fam, int(body.get("seed", 7)),
-                    n_demos=int(body.get("n_demos", 4)),
-                    noise=float(body.get("noise", 0.0)),
+                    fam, _bounded_int(body.get("seed", 7), 0, 999999, 7),
+                    n_demos=_bounded_int(body.get("n_demos", 4), 1, 16, 4),
+                    noise=_bounded_float(body.get("noise", 0.0), 0.0, 1.0,
+                                         0.0),
                     split=body.get("split", "test"))
                 gkw = body.get("strategy_kwargs", {})
                 rows = {}
-                for name in body.get("strategies",
-                                     ["context", "param_tta", "state"]):
-                    skw = dict(gkw.get(name, {}))
+                for name in names:
+                    skw = _resolve_kw(name, dict(gkw.get(name, {})))
                     skw.setdefault("tol", 0.5)
                     r = R.run_episode(task, name, skw)
                     rows[name] = {
@@ -265,13 +336,16 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/interference":
                 fam = body.get("family", "linear")
                 name = body.get("strategy", "state")
+                fam, name, err = _validate_request(fam, name)
+                if err:
+                    return self._json(*err)
                 skw = {k: v for k, v in
-                       _flat_kw(body, name).items()
+                       _resolve_kw(name, _flat_kw(body, name)).items()
                        if k != "tol"}
-                tol = float(body.get("tol", 0.5))
-                s = int(body.get("seed", 7))
-                n, noise = int(body.get("n_demos", 4)), float(
-                    body.get("noise", 0.0))
+                tol = _bounded_float(body.get("tol", 0.5), 1e-6, 10.0, 0.5)
+                s = _bounded_int(body.get("seed", 7), 0, 999999, 7)
+                n = _bounded_int(body.get("n_demos", 4), 1, 16, 4)
+                noise = _bounded_float(body.get("noise", 0.0), 0.0, 1.0, 0.0)
                 tA = T.generate_task(fam, s, n_demos=n, noise=noise,
                                      split="test")
                 tB = None
@@ -305,6 +379,8 @@ class Handler(BaseHTTPRequestHandler):
                           "correct": ok(pB, tB.ground_truth)},
                     "strategy_display": S.STRATEGY_DISPLAY.get(name, name),
                     "mode": "continual (no reset A->B, explicit)",
+                    "provenance": _prov(tA, {"strategy": name,
+                                             "mode": "continual A->B->A"}),
                     "execution_type": "live",
                     "evidence_type": evidence_for([name]),
                     "badges": ["LIVE", "SYNTHETIC"],
@@ -313,21 +389,30 @@ class Handler(BaseHTTPRequestHandler):
                 import numpy as np
                 fam = body.get("family", "linear")
                 name = body.get("strategy", "state")
+                fam, name, err = _validate_request(fam, name)
+                if err:
+                    return self._json(*err)
                 skw = {k: v for k, v in
-                       _flat_kw(body, name).items()
+                       _resolve_kw(name, _flat_kw(body, name)).items()
                        if k != "tol"}
-                tol = float(body.get("tol", 0.5))
-                s = int(body.get("seed", 7))
-                n, noise = int(body.get("n_demos", 4)), float(
-                    body.get("noise", 0.0))
+                tol = _bounded_float(body.get("tol", 0.5), 1e-6, 10.0, 0.5)
+                s = _bounded_int(body.get("seed", 7), 0, 999999, 7)
+                n = _bounded_int(body.get("n_demos", 4), 1, 16, 4)
+                noise = _bounded_float(body.get("noise", 0.0), 0.0, 1.0, 0.0)
                 tA = T.generate_task(fam, s, n_demos=n, noise=noise,
                                      split="test")
                 tB = T.generate_task(fam, 200000 + s, n_demos=n,
                                      noise=noise, split="test")
+                perts = body.get("perturbations",
+                                 ["zero", "swap", "nullmean"])
+                if (not isinstance(perts, list) or not perts or
+                        len(perts) > 6 or
+                        any(p not in ("zero", "shuffle", "noise", "swap",
+                                      "nullmean") for p in perts)):
+                    return self._json({"error": "bad perturbations"}, 400)
                 rng = np.random.RandomState(s)
                 rows = {}
-                for p in body.get("perturbations",
-                                  ["zero", "swap", "nullmean"]):
+                for p in perts:
                     st = S.make_strategy(name, family=fam, **skw)
                     st.reset()
                     st.adapt(tA.demonstrations)
@@ -378,6 +463,8 @@ class Handler(BaseHTTPRequestHandler):
                             "counterfactual) + nullmean (on-manifold "
                             "null). Shuffle-failure alone is not "
                             "claimed as information removal.",
+                    "provenance": _prov(tA, {"strategy": name,
+                                             "mode": "perturb/restore E8"}),
                     "execution_type": "live",
                     "evidence_type": evidence_for([name]),
                     "badges": ["LIVE", "SYNTHETIC"],
@@ -386,23 +473,36 @@ class Handler(BaseHTTPRequestHandler):
                 import numpy as np
                 fam = body.get("family", "linear")
                 name = body.get("strategy", "state")
-                base_kw = _flat_kw(body, name)
+                fam, name, err = _validate_request(fam, name)
+                if err:
+                    return self._json(*err)
+                base_kw = _resolve_kw(name, _flat_kw(body, name))
                 var = body.get("var", "n_demos")
-                values = list(body.get("values", [1, 2, 4, 6, 8]))[:8]
-                eps = min(int(body.get("episodes", 25)), 50)
-                seed0 = int(body.get("seed_base", 0))
+                if var not in ("n_demos", "noise", "state_dim", "steps"):
+                    return self._json({"error": "bad var"}, 400)
+                raw_values = body.get("values", [1, 2, 4, 6, 8])
+                if not isinstance(raw_values, list) or not raw_values:
+                    return self._json({"error": "bad values"}, 400)
+                values = list(raw_values)[:8]
+                try:
+                    eps = min(int(body.get("episodes", 25)), 50)
+                except (TypeError, ValueError):
+                    return self._json({"error": "bad episodes"}, 400)
+                if eps < 1:
+                    return self._json({"error": "bad episodes"}, 400)
+                seed0 = _bounded_int(body.get("seed_base", 0), 0, 999999, 0)
                 pts = []
                 for v in values:
                     kw, nd, noise = dict(base_kw), 4, 0.0
                     if var == "n_demos":
-                        nd = int(v)
+                        nd = _bounded_int(v, 1, 16, 4)
                     elif var == "noise":
-                        noise = float(v)
+                        noise = _bounded_float(v, 0.0, 1.0, 0.0)
                     elif var == "state_dim":
                         kw["state_dim"] = None if v in (
-                            "full", None) else int(v)
+                            "full", None) else _bounded_int(v, 1, 64, 4)
                     elif var == "steps":
-                        kw["steps"] = int(v)
+                        kw["steps"] = _bounded_int(v, 0, 64, 8)
                     else:
                         return self._json({"error": "bad var"}, 400)
                     hits = []
@@ -416,9 +516,20 @@ class Handler(BaseHTTPRequestHandler):
                     acc, ci = TL.accuracy_ci(hits)
                     pts.append({"value": v, "accuracy": acc,
                                 "ci95": list(ci), "n": eps})
+                sweep_cfg = {"family": fam, "strategy": name, "var": var,
+                             "values": [str(v) for v in values],
+                             "episodes": eps, "seed_base": seed0}
                 return self._json({
                     "var": var, "points": pts,
                     "strategy_display": S.STRATEGY_DISPLAY.get(name, name),
+                    "provenance": {
+                        "seed_base": seed0, "split": "test",
+                        "task_generator_version": T.GENERATOR_VERSION,
+                        "model_version": S.MODEL_VERSION,
+                        "git_commit": R._git_commit(),
+                        "config_hash": R._config_hash(sweep_cfg),
+                        "result_schema_version": R.RESULT_SCHEMA_VERSION,
+                    },
                     "execution_type": "live",
                     "evidence_type": evidence_for([name]),
                     "badges": ["LIVE", "SYNTHETIC"],

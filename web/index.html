@@ -193,11 +193,18 @@
       <option value="symbolic">Symbolic Rule Lab</option><option value="compositional">Composition Lab</option>
       <option value="grid_toy">Grid Transformation Lab</option></select></label>
     <label>Strategy <select id="lab-strat">
+      <optgroup label="Controlled">
       <option value="state">Adaptive State — controlled model</option>
       <option value="context">Context-conditioned baseline</option>
       <option value="param_tta">Parameter TTA — toy parameterized model</option>
       <option value="ttt_state">TTT State — learned state parameterization</option>
-      <option value="frozen">Frozen baseline — no adaptation</option></select></label>
+      <option value="frozen">Frozen baseline — no adaptation</option>
+      </optgroup>
+      <optgroup label="Learned — Research Lab (linear only, vetted checkpoints)">
+      <option value="learned_state">Learned Recurrent State (Phase 2B)</option>
+      <option value="learned_tta">Learned Parameter TTA (Phase 2B)</option>
+      <option value="learned_ttt">Learned TTT State (Phase 2B)</option>
+      </optgroup></select></label>
     <label>Seed <input id="lab-seed" type="number" value="7" min="0" max="999999"></label>
     <label>Demos <input id="lab-nd" type="number" value="4" min="1" max="16"></label>
     <label>Noise <input id="lab-noise" type="number" value="0" min="0" max="1" step="0.05"></label>

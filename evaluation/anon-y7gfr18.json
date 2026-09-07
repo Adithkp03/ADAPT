@@ -1,0 +1,212 @@
+{
+ "id": "anon-y7gfr18",
+ "started": "2026-09-07T17:50:34.553Z",
+ "events": [
+  {
+   "t": 1788803434554,
+   "ev": "eor_step",
+   "d": {
+    "i": 0
+   }
+  },
+  {
+   "t": 1788803434554,
+   "ev": "session_start",
+   "d": {}
+  },
+  {
+   "t": 1788803583074,
+   "ev": "pretest",
+   "d": {
+    "s": 3,
+    "detail": [
+     0,
+     0,
+     1,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "t": 1788803591453,
+   "ev": "flag_new",
+   "d": {}
+  },
+  {
+   "t": 1788803592114,
+   "ev": "flag_new",
+   "d": {}
+  },
+  {
+   "t": 1788803598729,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 93667,
+    "mine": "2.5",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788803606114,
+   "ev": "mech_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788803607666,
+   "ev": "nd_predict",
+   "d": {
+    "v": "improve"
+   }
+  },
+  {
+   "t": 1788803608860,
+   "ev": "nd_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788803610702,
+   "ev": "compare",
+   "d": {
+    "seed": 21
+   }
+  },
+  {
+   "t": 1788803612683,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788803613540,
+   "ev": "k_sweep",
+   "d": {
+    "K": 8
+   }
+  },
+  {
+   "t": 1788803615290,
+   "ev": "noise_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788803617858,
+   "ev": "ret_predict",
+   "d": {
+    "v": "improve"
+   }
+  },
+  {
+   "t": 1788803618371,
+   "ev": "ret_predict",
+   "d": {
+    "v": "same"
+   }
+  },
+  {
+   "t": 1788803619467,
+   "ev": "ret_predict",
+   "d": {
+    "v": "degrade"
+   }
+  },
+  {
+   "t": 1788803621149,
+   "ev": "interference",
+   "d": {
+    "seed": 33,
+    "drop": 1
+   }
+  },
+  {
+   "t": 1788803622296,
+   "ev": "interference",
+   "d": {
+    "seed": 9646,
+    "drop": 1
+   }
+  },
+  {
+   "t": 1788803624633,
+   "ev": "intervene",
+   "d": {
+    "seed": 9646
+   }
+  },
+  {
+   "t": 1788803628107,
+   "ev": "eor_step",
+   "d": {
+    "i": 1
+   }
+  },
+  {
+   "t": 1788803628386,
+   "ev": "eor_step",
+   "d": {
+    "i": 2
+   }
+  },
+  {
+   "t": 1788803631193,
+   "ev": "bdh_quiz",
+   "d": {
+    "ok": false
+   }
+  },
+  {
+   "t": 1788803634119,
+   "ev": "challenge_dealt",
+   "d": {
+    "seed": 32689
+   }
+  },
+  {
+   "t": 1788803635665,
+   "ev": "challenge_run",
+   "d": {
+    "pick": null,
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788803637458,
+   "ev": "challenge_run",
+   "d": {
+    "pick": "state",
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788803639136,
+   "ev": "lab_run",
+   "d": {
+    "fam": "linear",
+    "strat": "state"
+   }
+  },
+  {
+   "t": 1788803645794,
+   "ev": "posttest",
+   "d": {
+    "s": 3,
+    "detail": [
+     0,
+     1,
+     0,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "score": {
+  "pred": 2,
+  "predN": 6,
+  "mech": 1,
+  "mechN": 2
+ },
+ "explain": ""
+}

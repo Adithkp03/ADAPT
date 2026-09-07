@@ -8,35 +8,47 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to experiment</a>
-<header class="top">
-  <div>
-    <p class="kicker">ADAPT · controlled laboratory</p>
-    <h1>Where does the new rule go?</h1>
-    <p class="sub">A model sees a task it was never trained on, watches a few examples, and solves it — without changing its weights. Run the real experiment. Find where the rule went.</p>
-  </div>
-  <div class="honesty" role="note" aria-label="Honesty notice">
-    <strong>What this is:</strong> small, interpretable toy systems that isolate
-    inference-time adaptation mechanics. <strong>What it is not:</strong> a frontier
-    language model, ARC-AGI, or official BDH software. Every number below is either
-    computed live by the research engine or a labeled precomputed research result.
-  </div>
-</header>
 
-<nav class="stages" aria-label="Journey stages">
-  <ol>
-    <li><a href="#stage-start">Start</a></li>
-    <li><a href="#stage-flagship">Teach it</a></li>
-    <li><a href="#stage-manipulate">Manipulate</a></li>
-    <li><a href="#stage-tradeoffs">Stress it</a></li>
-    <li><a href="#stage-interfere">Break it</a></li>
-    <li><a href="#stage-bdh">BDH bridge</a></li>
-    <li><a href="#stage-challenge">Transfer</a></li>
-    <li><a href="#stage-lab">Lab</a></li>
-    <li><a href="#stage-results">Results</a></li>
-  </ol>
-</nav>
 
-<main id="main">
+<!-- Main App Layout -->
+<div class="app-layout">
+  
+  <!-- Sidebar / Journey Tracker -->
+  <aside class="sidebar">
+    <nav class="stages" aria-label="Journey stages">
+      <p class="sidebar-title">Journey Tracker</p>
+      <p class="sidebar-subtitle">YOUR LEARNING PATHWAY</p>
+      <ol>
+        <li><a href="#stage-start">Start</a></li>
+        <li><a href="#stage-flagship">Teach it</a></li>
+        <li><a href="#stage-manipulate">Manipulate</a></li>
+        <li><a href="#stage-tradeoffs">Stress it</a></li>
+        <li><a href="#stage-interfere">Break it</a></li>
+        <li><a href="#stage-bdh">BDH bridge</a></li>
+        <li><a href="#stage-challenge">Transfer</a></li>
+        <li><a href="#stage-lab">Lab</a></li>
+        <li><a href="#stage-results">Results</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="content-area">
+    <header class="top">
+      <div>
+        <p class="kicker">ADAPT · controlled laboratory</p>
+        <h1>Where does the new rule go?</h1>
+        <p class="sub">A model sees a task it was never trained on, watches a few examples, and solves it — without changing its weights. Run the real experiment. Find where the rule went.</p>
+      </div>
+      <div class="honesty" role="note" aria-label="Honesty notice">
+        <strong>What this is:</strong> small, interpretable toy systems that isolate
+        inference-time adaptation mechanics. <strong>What it is not:</strong> a frontier
+        language model, ARC-AGI, or official BDH software. Every number below is either
+        computed live by the research engine or a labeled precomputed research result.
+      </div>
+    </header>
+
+    <main id="main">
 <!-- ============ STAGE 0 : START + PRE-TEST ============ -->
 <section id="stage-start" class="card" aria-labelledby="h-start">
   <h2 id="h-start">Start: check your starting point</h2>
@@ -262,6 +274,8 @@ different dynamics.</pre>
   <span class="badge pub">PUBLISHED RESULT</span> paper-reported ·
   <span class="badge ill">ILLUSTRATIVE</span> diagram, not model output</p>
 </footer>
+  </div> <!-- end content-area -->
+</div> <!-- end app-layout -->
 <script src="app.js"></script>
 </body>
 </html>

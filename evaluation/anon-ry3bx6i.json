@@ -1,0 +1,126 @@
+{
+ "id": "anon-ry3bx6i",
+ "started": "2026-09-07T17:57:06.648Z",
+ "events": [
+  {
+   "t": 1788803826648,
+   "ev": "eor_step",
+   "d": {
+    "i": 0
+   }
+  },
+  {
+   "t": 1788803826649,
+   "ev": "session_start",
+   "d": {}
+  },
+  {
+   "t": 1788803836145,
+   "ev": "pretest",
+   "d": {
+    "s": 3,
+    "detail": [
+     1,
+     0,
+     0,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "t": 1788803838919,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788803843985,
+   "ev": "mech_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788803845441,
+   "ev": "nd_predict",
+   "d": {
+    "v": "same"
+   }
+  },
+  {
+   "t": 1788803846674,
+   "ev": "nd_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788803848202,
+   "ev": "compare",
+   "d": {
+    "seed": 21
+   }
+  },
+  {
+   "t": 1788803853185,
+   "ev": "eor_step",
+   "d": {
+    "i": 1
+   }
+  },
+  {
+   "t": 1788803854239,
+   "ev": "challenge_dealt",
+   "d": {
+    "seed": 25686
+   }
+  },
+  {
+   "t": 1788803857624,
+   "ev": "challenge_run",
+   "d": {
+    "pick": "state",
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788803859907,
+   "ev": "lab_run",
+   "d": {
+    "fam": "linear",
+    "strat": "state"
+   }
+  },
+  {
+   "t": 1788803861462,
+   "ev": "precomputed",
+   "d": {
+    "exp": "008_intervention_linear"
+   }
+  },
+  {
+   "t": 1788803868915,
+   "ev": "posttest",
+   "d": {
+    "s": 4,
+    "detail": [
+     1,
+     1,
+     1,
+     1,
+     0
+    ]
+   }
+  }
+ ],
+ "score": {
+  "pred": 0,
+  "predN": 2,
+  "mech": 1,
+  "mechN": 1
+ },
+ "explain": ""
+}

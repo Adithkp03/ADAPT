@@ -28,6 +28,10 @@ Protocol: 10–15 min unassisted → pre/post gain + transfer (challenge pick + 
 (weight-change → context/state; state≠weights; recurrence≠TTT; compute≠always-better; dims≠concepts).
 Design testing checklist (§42): find interaction, control meaning, live-ness, what-changed, pred-vs-truth, completion.
 In-app metrics: event log with timestamps enables path/failure/time analysis once participants run.
+Automated lock: `tests/test_phase3.py` (18 checks) enforces the §66 Definition of Done on every run —
+deliverable presence (D3.1–D3.12), stage/badge/provenance wiring, honesty rules, mobile/a11y hooks,
+stdlib server surface, engine delta honesty, precomputed + figures. Live HTTP remains `tests/test_server.py`.
+Normative visual rules live in `design/` (visual_system, state_visualization, interaction_patterns).
 
 ## 6. Definition-of-Done status (§66)
 Educational: journey ✓ claim ✓ predictions ✓ real variables ✓ visible state ✓ visible truth ✓ failure ✓ BDH ✓ transfer ✓ explain ✓.

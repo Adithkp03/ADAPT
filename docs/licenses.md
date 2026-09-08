@@ -1,9 +1,12 @@
 # D5.12 — Licenses
 
-Project decision: **MIT** for the ADAPT-authored code and prose (declared
-in `LICENSE`; the maintainer applies it at packaging time). What follows
-is the full inventory of what is ours vs. what is referenced but not
-shipped.
+Project decision: **MIT** (see `LICENSE`, copyright held by the ADAPT
+team: Adith K P, Akash Rajeev K V, Abindas P, Alan B). The MIT license
+covers **ADAPT-authored** code, prose, and generated data only. Every
+third-party component and research asset retains its own license, as
+inventoried below and in `provenance/`. MIT status of the repository as
+a whole must not be read as a statement about referenced/published
+third-party work.
 
 ## Source code (ours)
 
@@ -59,4 +62,9 @@ do. We ship none of the papers' figures, icons, or text.
 ## References, not redistribution
 
 Papers and official repositories are cited precisely where claims use
-them (`docs/sources.md`); citing is not redistributing.
+them (`docs/sources.md`); citing is not redistributing. Published
+research (e.g. BDH / BDH-CQ papers) remains copyright of its authors and
+publishers; any referenced external model/weights remain under their own
+specified terms (`provenance/models.csv`). Third-party libraries are
+listed above with their licenses (`provenance/third_party.csv`). The MIT
+license applies only to ADAPT's original work.

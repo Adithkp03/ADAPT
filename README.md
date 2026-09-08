@@ -253,8 +253,9 @@ Primary sources are cited beside the claims that use them —
 
 `docs/licenses.md`, `provenance/` (code, data, models, assets, fonts,
 third-party). No webfonts, no external images, no reused paper figures
-— everything is either ours or cited. License: MIT (declared in
-`LICENSE`; confirm with the team at packaging time).
+— everything is either ours or cited. License: MIT. See `LICENSE`.
+Third-party components and research assets retain their respective
+licenses as documented in `docs/licenses.md` and `provenance/`.
 
 ## AI disclosure
 

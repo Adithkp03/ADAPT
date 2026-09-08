@@ -180,6 +180,35 @@ def test_d58_learning_report_honest():
     for j in jets:
         ids.append(json.loads(j.read_text(encoding="utf-8")).get("id"))
     assert len(ids) == len(set(ids)) or "excluded" in t
+    # exactly one duplicate export allowed: the re-export of anon-1gtigru
+    dup = len(ids) - len(set(ids))
+    assert dup <= 1, f"expected <=1 duplicate-ID export, found {dup}"
+    if dup == 1:
+        # the duplicate must be anon-2gtigru (re-export of anon-1gtigru)
+        import collections
+        counts = collections.Counter(ids)
+        repeated = [k for k, v in counts.items() if v > 1]
+        assert repeated == ["anon-1gtigru"], repeated
+        assert (ROOT / "evaluation" / "anon-2gtigru.json").exists()
+    # recruitment denominators match the report (10 recruited / 9 pre-post /
+    # 8 transfer)
+    distinct = set(ids)
+    assert len(distinct) == 10, len(distinct)
+    # analysis tables encode the same denominators
+    import csv
+    with open(ROOT / "evaluation" / "analysis" / "learning_gain.csv",
+              encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    have_both = sum(1 for r in rows if r["pre"] not in ("", None)
+                    and r["post"] not in ("", None))
+    assert have_both == 9, have_both
+    with open(ROOT / "evaluation" / "analysis" / "transfer.csv",
+              encoding="utf-8") as f:
+        trows = list(csv.DictReader(f))
+    have_pick = sum(1 for r in trows if r["pick"])
+    assert have_pick == 8, have_pick
+    # transfer stays an explicit honest 2/8
+    assert ("2/8" in t and "transfer" in t) or "2/8" in t or "25%" in t
     # analysis tables exist for the reported numbers
     assert (ROOT / "evaluation" / "analysis" / "learning_gain.csv").exists()
     assert (ROOT / "evaluation" / "analysis" / "transfer.csv").exists()

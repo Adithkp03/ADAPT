@@ -5,6 +5,9 @@ laboratory on inference-time adaptation, with exact ground truth,
 full provenance, and a rigorous, honestly-labelled connection to the
 BDH / BDH-CQ frontier.
 
+Release: `v1.0.0` — live at https://adapt-learner.up.railway.app
+(repo: https://github.com/Adithkp03/ADAPT).
+
 
 ## What this is
 

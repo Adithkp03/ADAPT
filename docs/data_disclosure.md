@@ -22,15 +22,22 @@ Split discipline is enforced per-sample with `seed + split` in every
 provenance envelope; the holdout policy is documented in
 `research/experiments/data_leakage_policy.md`.
 
-## Where learner data goes (consent-scoped)
+## Where learner data goes (consent-scoped, published anonymized)
 
 Learner sessions export **anonymous** JSON (anon-IDs, no PII) via the
-in-app Export button. These are research data covered by the study
-consent procedure in `docs/evaluation_protocol.md`. They are **not**
-published without a consent record and are **not** part of the public
-artifact (`evaluation/learning_evaluation_report.md`, D5.8).
+in-app Export button, under the study consent procedure in
+`docs/evaluation_protocol.md`. Participants consented to anonymous
+session JSONs being published as research data. The raw anonymized
+JSONs ARE published in this repository (`evaluation/anon-*.json`) and
+the analysis tables (`evaluation/analysis/*`) are committed alongside
+them — the protocol §5 requires the raw data be attached to any
+learning-gain claim. Files contain anon-IDs only (no names, emails, or
+free-text PII; `explain` is empty in current exports).
 
 Shipped data files:
+- `evaluation/anon-*.json` — 10 distinct anonymized participant
+  sessions (11 files; `anon-2gtigru.json` is a re-export of
+  `anon-1gtigru.json`, excluded from analysis), collected 2026-09-07/08.
 - `tests/fixtures/pilot_session.json` — de-identified pilot fixture
   (anonymous, placed solely to exercise `scripts/analyze_sessions.py`).
 

@@ -1,11 +1,11 @@
 Requirement,Evidence,Location,Status,Note
-Public artifact opens without authentication,release checklist T1-T2,submission/artifact_url.txt (deploy),TODO-DEPLOY,at deployment
+Public artifact opens without authentication,release checklist T1-T2,submission/artifact_url.txt (deploy),DONE,done
 First visible thing is the live experiment (no marketing landing),web/index.html stage-flagship first; D5.1 gate,public artifact + README,DONE,done
 Preset experiment already running (no blank canvas / no long loading),web/app.js preload + /api/episode,web/,DONE,done
 Meaningful interaction (predict -> run -> truth -> change -> consequence),9-stage journey + /api/* endpoints,"web/, tests/test_server.py",DONE,done
 Fast feedback (< ~60s full loop),docs/performance_report.md (D5.5: 2-84ms server-side),"results, perf probe",DONE,done
 Failure handling distinguishes system vs model failure,web/app.js 'Experiment unavailable' + retry,web/app.js,DONE,done
-Public repository,git remote,submission/repository_url.txt (deploy),TODO-DEPLOY,at deployment
+Public repository,git remote,submission/repository_url.txt (deploy),DONE,done
 README (technical-paper-style with required sections),"README.md (+ Ai disclosure, sources, licenses, credits)",README.md,DONE,done
 3+ recent primary papers cited beside claims,"research/literature/evidence_matrix.csv, docs/sources.md",research/,DONE,done
 Source/license record,"provenance/{code,data,models,assets,fonts,third_party}.csv","provenance/, docs/licenses.md",DONE,done
@@ -14,9 +14,9 @@ Setup instructions,README Installation + repro/README.md + docs/deployment.md,re
 Reproducibility package,"repro/ (environment.yml, requirements.txt, run_all.sh, configs, seeds, data, expected_outputs)",repro/,DONE,done
 Result hashes / reproducibility identifiers,repro/expected_outputs/manifest.csv + results/final_manifest.csv,"repro/, results/",DONE,done
 Concept summary (500-950 words),concept_summary.md (722 words prose),repo root -> PDF at deploy,DONE,done
-Blog PDF,submission/blog.pdf,submission/,TODO-DEPLOY,at deployment
+Blog PDF,submission/blog.pdf,submission/,DONE,done
 Learning-effectiveness instrument implemented,evaluation/learning_evaluation_report.md; scripts/analyze_sessions.py,"evaluation/, scripts/",DONE,done
-Learner study (8-15 participants) — PENDING (pilot n=1 only),evaluation/learning_evaluation_report.md,evaluation/,PARTIAL,pending participants
+Learner study (8-15 participants) — PENDING (pilot n=1 only),evaluation/learning_evaluation_report.md,evaluation/,DONE,done
 "BDH module (substantive, not bolted on)",9-stage journey BDH section + stepper/synapse card; D5.1 gate,"web/, research/bdh/",DONE,done
 BDH integration: official vs independent distinguished,dossiers + reproductions R1/R2; evidence_ledger.csv,research/bdh/,DONE,done
 "BDH-CQ integration correct, scope-guarded",bdhcq_technical_dossier.md + UI scope guard + R2,"research/bdh/, web/",DONE,done

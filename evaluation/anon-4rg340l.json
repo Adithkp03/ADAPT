@@ -1,0 +1,76 @@
+{
+ "id": "anon-4rg340l",
+ "started": "2026-09-08T04:06:31.283Z",
+ "events": [
+  {
+   "t": 1788840391284,
+   "ev": "eor_step",
+   "d": {
+    "i": 0
+   }
+  },
+  {
+   "t": 1788840391284,
+   "ev": "session_start",
+   "d": {}
+  },
+  {
+   "t": 1788840431807,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788840435208,
+   "ev": "mech_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788840437653,
+   "ev": "nd_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840446091,
+   "ev": "bdh_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788840455582,
+   "ev": "lab_run",
+   "d": {
+    "fam": "linear",
+    "strat": "state"
+   }
+  },
+  {
+   "t": 1788840472041,
+   "ev": "posttest",
+   "d": {
+    "s": 3,
+    "detail": [
+     0,
+     1,
+     0,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "score": {
+  "pred": 0,
+  "predN": 0,
+  "mech": 2,
+  "mechN": 2
+ },
+ "explain": ""
+}

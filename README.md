@@ -5,7 +5,6 @@ laboratory on inference-time adaptation, with exact ground truth,
 full provenance, and a rigorous, honestly-labelled connection to the
 BDH / BDH-CQ frontier.
 
-Reference implementation commit: `2824303`.
 
 ## What this is
 
@@ -239,7 +238,7 @@ resolution caveat measured in D5.5, reverse-proxy rate limiting
 - Capacity probe is a proxy → cliff, not graceful degradation.
 - Learned recurrent variant did not acquire linear rule under budget (honest negative).
 - ARC-like pool is a small proxy; grid_toy is never ARC-AGI.
-- Learning-gain claims pending the 8–15-participant study (pilot n=1).
+- Learning-gain claims pending the 8–15-participant study (n=10 to date).
 - BDH/BDH-CQ headline numbers quoted as PUBLISHED with scope guards; our reproductions did not match them.
 
 Full treatment: `docs/scientific_limitations.md`, `results/README.md`.

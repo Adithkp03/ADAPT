@@ -1,0 +1,190 @@
+{
+ "id": "anon-iw0axf8",
+ "started": "2026-09-08T04:10:55.363Z",
+ "events": [
+  {
+   "t": 1788840655365,
+   "ev": "eor_step",
+   "d": {
+    "i": 0
+   }
+  },
+  {
+   "t": 1788840655366,
+   "ev": "session_start",
+   "d": {}
+  },
+  {
+   "t": 1788840681050,
+   "ev": "pretest",
+   "d": {
+    "s": 1,
+    "detail": [
+     0,
+     0,
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  {
+   "t": 1788840685214,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788840696480,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "1.757",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788840703650,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "-1.757",
+    "mOK": true,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788840711563,
+   "ev": "mech_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788840716244,
+   "ev": "nd_predict",
+   "d": {
+    "v": "improve"
+   }
+  },
+  {
+   "t": 1788840717883,
+   "ev": "nd_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840720748,
+   "ev": "compare",
+   "d": {
+    "seed": 21
+   }
+  },
+  {
+   "t": 1788840724204,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840727100,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840729661,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840732436,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840733347,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840735907,
+   "ev": "k_sweep",
+   "d": {
+    "K": 6
+   }
+  },
+  {
+   "t": 1788840738262,
+   "ev": "noise_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840742765,
+   "ev": "intervene",
+   "d": {
+    "seed": 33
+   }
+  },
+  {
+   "t": 1788840748661,
+   "ev": "eor_step",
+   "d": {
+    "i": 1
+   }
+  },
+  {
+   "t": 1788840749392,
+   "ev": "eor_step",
+   "d": {
+    "i": 2
+   }
+  },
+  {
+   "t": 1788840756181,
+   "ev": "challenge_dealt",
+   "d": {
+    "seed": 47081
+   }
+  },
+  {
+   "t": 1788840758845,
+   "ev": "challenge_run",
+   "d": {
+    "pick": null,
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788840766727,
+   "ev": "challenge_run",
+   "d": {
+    "pick": "state",
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788840782849,
+   "ev": "posttest",
+   "d": {
+    "s": 5,
+    "detail": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "score": {
+  "pred": 2,
+  "predN": 4,
+  "mech": 1,
+  "mechN": 1
+ },
+ "explain": ""
+}

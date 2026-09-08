@@ -88,7 +88,7 @@ reproduced by us and stays scoped as PUBLISHED.
 The capacity probe shows a cliff, not graceful degradation; the
 recurrent variant under our meta-training budget did not acquire the
 linear rule; reader expressivity fails on a harder family. Learning-gain
-claims wait on the full 8–15-participant study (pilot n=1 only). No
+claims wait on the full 8–15-participant study (n=10 to date). No
 claim is made past toy scale.
 
 ## Final — Where to continue learning

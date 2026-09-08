@@ -1,7 +1,7 @@
 {
-  "n_sessions": 4,
-  "bdh_order_quiz_correct": 2,
-  "bdh_order_quiz_n": 5,
-  "mech_correct": 4,
-  "mech_n": 7
+  "n_sessions": 10,
+  "bdh_order_quiz_correct": 6,
+  "bdh_order_quiz_n": 11,
+  "mech_correct": 10,
+  "mech_n": 13
 }

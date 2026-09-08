@@ -165,7 +165,7 @@ def test_d58_learning_report_honest():
     t = (ROOT / "evaluation" /
          "learning_evaluation_report.md").read_text(encoding="utf-8")
     # honest study framing: no finished claim, distinct-ID discipline
-    assert "IN PROGRESS" in t and "n=4" in t
+    assert "IN PROGRESS" in t and "n=10" in t
     assert ("distinct" in t and "excluded" in t) or "dedupe" in t \
         or "double-count" in t
     assert "8" in t and "15" in t and "participant" in t

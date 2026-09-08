@@ -1,0 +1,171 @@
+{
+ "id": "anon-9bve55v",
+ "started": "2026-09-07T20:50:25.997Z",
+ "events": [
+  {
+   "t": 1788814226000,
+   "ev": "eor_step",
+   "d": {
+    "i": 0
+   }
+  },
+  {
+   "t": 1788814226001,
+   "ev": "session_start",
+   "d": {}
+  },
+  {
+   "t": 1788840536836,
+   "ev": "pretest",
+   "d": {
+    "s": 2,
+    "detail": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ]
+   }
+  },
+  {
+   "t": 1788840541142,
+   "ev": "flagship_run",
+   "d": {
+    "seed": 7,
+    "mine": "",
+    "mOK": false,
+    "modelOK": true
+   }
+  },
+  {
+   "t": 1788840544075,
+   "ev": "mech_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788840547110,
+   "ev": "nd_predict",
+   "d": {
+    "v": "degrade"
+   }
+  },
+  {
+   "t": 1788840548937,
+   "ev": "nd_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840551178,
+   "ev": "compare",
+   "d": {
+    "seed": 21
+   }
+  },
+  {
+   "t": 1788840553943,
+   "ev": "ds_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840555579,
+   "ev": "k_sweep",
+   "d": {
+    "K": 8
+   }
+  },
+  {
+   "t": 1788840558552,
+   "ev": "noise_sweep",
+   "d": {}
+  },
+  {
+   "t": 1788840561532,
+   "ev": "ret_predict",
+   "d": {
+    "v": "improve"
+   }
+  },
+  {
+   "t": 1788840564365,
+   "ev": "ret_predict",
+   "d": {
+    "v": "same"
+   }
+  },
+  {
+   "t": 1788840584742,
+   "ev": "ret_predict",
+   "d": {
+    "v": "improve"
+   }
+  },
+  {
+   "t": 1788840586744,
+   "ev": "interference",
+   "d": {
+    "seed": 33,
+    "drop": 1
+   }
+  },
+  {
+   "t": 1788840590049,
+   "ev": "intervene",
+   "d": {
+    "seed": 33
+   }
+  },
+  {
+   "t": 1788840596450,
+   "ev": "eor_step",
+   "d": {
+    "i": 1
+   }
+  },
+  {
+   "t": 1788840601083,
+   "ev": "bdh_quiz",
+   "d": {
+    "ok": true
+   }
+  },
+  {
+   "t": 1788840604630,
+   "ev": "challenge_dealt",
+   "d": {
+    "seed": 79368
+   }
+  },
+  {
+   "t": 1788840613203,
+   "ev": "challenge_run",
+   "d": {
+    "pick": "state",
+    "winner": "context"
+   }
+  },
+  {
+   "t": 1788840640064,
+   "ev": "posttest",
+   "d": {
+    "s": 5,
+    "detail": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ],
+ "score": {
+  "pred": 0,
+  "predN": 5,
+  "mech": 2,
+  "mechN": 2
+ },
+ "explain": ""
+}

@@ -1,6 +1,6 @@
 misconception,defined,probe,held_pre -> held_post
-M1,learning requires weight change,pre/post Q1 (LO1),3/4 -> 2/4
-M2,state equals weights,pre/post Q3 (LO2) + final mech_quiz,3/4 -> 1/4
-M4,more compute always better,pre/post Q4 (LO4/LO7 cliff),0/4 -> 1/4
+M1,learning requires weight change,pre/post Q1 (LO1),7/9 -> 3/9
+M2,state equals weights,pre/post Q3 (LO2) + final mech_quiz,6/9 -> 2/9
+M4,more compute always better,pre/post Q4 (LO4/LO7 cliff),0/9 -> 2/9
 M3,recurrence equals TTT,not probed by fixed items,n/a
 M5,more dims = more concepts,not probed by fixed items,n/a

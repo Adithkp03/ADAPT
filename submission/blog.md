@@ -109,9 +109,9 @@ Transformation Lab" label never claims ARC Reasoning.
   real limit of the study, reported rather than hidden.
 - The ARC-like proxy pool is small and is a synthetic grid proxy, not
   ARC-AGI.
-- Learner-study learning-gain: n=4 distinct participants to date
-  (target 8–15); results are preliminary and transfer to the unseen
-  challenge is currently 0/4 — the honest, still-open question.
+- Learner-study learning-gain: n=10 distinct participants to date
+  (target 8–15); results are preliminary (mean gain +1.2/9, transfer to
+  the unseen challenge 2/8) — the honest, still-open question.
 
 ## Interactive artifact
 

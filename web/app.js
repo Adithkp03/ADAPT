@@ -140,16 +140,16 @@ function sweepTable(r) {
 }
 function drawSweep(cv, pts, xlab, ylab) {
   const c = cv.getContext("2d"), W = cv.width, H = cv.height;
-  c.clearRect(0, 0, W, H); c.fillStyle = "#111"; c.font = "12px sans-serif";
+  c.clearRect(0, 0, W, H); c.fillStyle = "#e0e0e0"; c.font = "12px sans-serif";
   const bw = W / pts.length;
   pts.forEach((p, i) => {
     const h = p.accuracy * (H - 50), x = i * bw + bw * 0.25, w = bw * 0.5;
     c.fillStyle = "#0b5fff"; c.fillRect(x, H - 30 - h, w, h);
     const y1 = H - 30 - p.ci95[1] * (H - 50), y2 = H - 30 - p.ci95[0] * (H - 50);
-    c.strokeStyle = "#111"; c.beginPath(); c.moveTo(x + w / 2, y1); c.lineTo(x + w / 2, y2); c.stroke();
-    c.fillStyle = "#111"; c.fillText(String(p.value), x, H - 12); c.fillText(p.accuracy.toFixed(2), x, H - 36 - h);
+    c.strokeStyle = "#ffffff"; c.beginPath(); c.moveTo(x + w / 2, y1); c.lineTo(x + w / 2, y2); c.stroke();
+    c.fillStyle = "#e0e0e0"; c.fillText(String(p.value), x, H - 12); c.fillText(p.accuracy.toFixed(2), x, H - 36 - h);
   });
-  c.fillStyle = "#555"; c.fillText(`${xlab} → ${ylab} (whiskers: 95% CI)`, 8, 14);
+  c.fillStyle = "#a0a0a0"; c.fillText(`${xlab} → ${ylab} (whiskers: 95% CI)`, 8, 14);
 }
 let cmpSeed = 21;
 async function cmpRun() {

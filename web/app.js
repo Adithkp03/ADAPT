@@ -140,16 +140,21 @@ function sweepTable(r) {
 }
 function drawSweep(cv, pts, xlab, ylab) {
   const c = cv.getContext("2d"), W = cv.width, H = cv.height;
-  c.clearRect(0, 0, W, H); c.fillStyle = "#e0e0e0"; c.font = "12px sans-serif";
+  c.clearRect(0, 0, W, H); c.font = "12px sans-serif";
   const bw = W / pts.length;
   pts.forEach((p, i) => {
-    const h = p.accuracy * (H - 50), x = i * bw + bw * 0.25, w = bw * 0.5;
-    c.fillStyle = "#0b5fff"; c.fillRect(x, H - 30 - h, w, h);
-    const y1 = H - 30 - p.ci95[1] * (H - 50), y2 = H - 30 - p.ci95[0] * (H - 50);
+    const h = p.accuracy * (H - 80), x = i * bw + bw * 0.25, w = bw * 0.5;
+    c.fillStyle = "rgba(255, 255, 255, 0.6)"; c.fillRect(x, H - 30 - h, w, h);
+    const y1 = H - 30 - p.ci95[1] * (H - 80), y2 = H - 30 - p.ci95[0] * (H - 80);
     c.strokeStyle = "#ffffff"; c.beginPath(); c.moveTo(x + w / 2, y1); c.lineTo(x + w / 2, y2); c.stroke();
-    c.fillStyle = "#e0e0e0"; c.fillText(String(p.value), x, H - 12); c.fillText(p.accuracy.toFixed(2), x, H - 36 - h);
+    c.fillStyle = "#e0e0e0"; 
+    c.textAlign = "center";
+    c.fillText(String(p.value), x + w / 2, H - 10); 
+    c.fillText(p.accuracy.toFixed(2), x + w / 2, H - 40 - h);
   });
-  c.fillStyle = "#a0a0a0"; c.fillText(`${xlab} → ${ylab} (whiskers: 95% CI)`, 8, 14);
+  c.fillStyle = "#a0a0a0"; 
+  c.textAlign = "left";
+  c.fillText(`${xlab} → ${ylab} (whiskers: 95% CI)`, 8, 16);
 }
 let cmpSeed = 21;
 async function cmpRun() {
@@ -364,6 +369,12 @@ document.querySelectorAll('.stages a').forEach(link => {
   link.addEventListener('click', function() {
     document.querySelectorAll('.stages li').forEach(li => li.classList.remove('active'));
     this.parentElement.classList.add('active');
+    
+    // Close sidebar on mobile after clicking a link
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    }
   });
 });
 
@@ -379,4 +390,20 @@ if (sections.length > 0) {
     });
   }, { rootMargin: '-30% 0px -50% 0px' });
   sections.forEach(sec => observer.observe(sec));
+}
+
+/* ---------- Mobile Sidebar Toggle ---------- */
+const menuBtn = document.getElementById('menu-btn');
+const sidebar = document.querySelector('.sidebar');
+if (menuBtn && sidebar) {
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+  
+  // Close sidebar if clicking outside of it
+  document.addEventListener('click', (e) => {
+    if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
 }
